@@ -402,4 +402,5 @@ class Command(BaseCommand):
                 slug=data.pop("slug"),
                 defaults={**data, "category": category, "is_sample": False, "is_published": True, "display_order": order},
             )
-            project.technologies.set([_tech(name) for name in techs])
+            # Les technologies d'un projet sont des compétences : reprises par nom (créées plus haut par _skills).
+            project.skills.set([s for s in (Skill.objects.filter(name__iexact=n).first() for n in techs) if s])

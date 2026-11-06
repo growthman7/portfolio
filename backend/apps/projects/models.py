@@ -57,7 +57,8 @@ class Project(PublishableModel):
     results_en = models.TextField(max_length=3000, blank=True)
 
     category = models.ForeignKey(Category, on_delete=models.PROTECT, related_name="projects")
-    technologies = models.ManyToManyField(Technology, blank=True, related_name="projects")
+    # Compétences mises en œuvre (affichées comme « Technologies » sur le site public).
+    skills = models.ManyToManyField("skills.Skill", blank=True, related_name="projects")
     cover = models.ForeignKey(MediaAsset, null=True, blank=True, on_delete=models.SET_NULL, related_name="+")
     cover_alt_fr = models.CharField(max_length=200, blank=True)
     cover_alt_en = models.CharField(max_length=200, blank=True)

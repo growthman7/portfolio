@@ -6,10 +6,16 @@ import { SchemaForm, UploadControl, bi } from "../forms.jsx";
 import { Badge, Tabs, Thumb, fmtDate, useToast } from "../ui.jsx";
 
 async function loadOptions() {
-  const [categories, technologies] = await Promise.all([getAll("/admin/categories/"), getAll("/admin/technologies/")]);
+  const [categories, skills, skillCategories] = await Promise.all([
+    getAll("/admin/categories/"), getAll("/admin/skills/"), getAll("/admin/skill-categories/"),
+  ]);
+  const order = new Map(skillCategories.map((c, index) => [c.id, index]));
+  const groupName = new Map(skillCategories.map((c) => [c.id, c.name_fr]));
   return {
     categories: categories.map((c) => ({ value: c.id, label: c.name_fr })),
-    technologies: technologies.map((t) => ({ value: t.id, label: t.name })),
+    skills: [...skills]
+      .sort((a, b) => (order.get(a.category) ?? 999) - (order.get(b.category) ?? 999) || a.display_order - b.display_order || a.name.localeCompare(b.name, "fr"))
+      .map((sk) => ({ value: sk.id, label: sk.is_published ? sk.name : `${sk.name} (masquée)`, group: groupName.get(sk.category) || "Autres" })),
   };
 }
 
@@ -50,14 +56,10 @@ const schema = (options) => [
     title: "Technique & liens",
     fields: [
       {
-        name: "technologies", label: "Technologies", type: "tags", options: options.technologies,
-        help: "Cochez les technologies du projet ou ajoutez-en une nouvelle. Pensez à enregistrer le projet.",
-        emptyText: "Aucune technologie sélectionnée.",
-        createPlaceholder: "Nouvelle technologie (ex. Django)", createLabel: "+ Ajouter", createMax: 60,
-        onCreate: async (name) => {
-          const technology = await api.post("/admin/technologies/", { name });
-          return { value: technology.id, label: technology.name };
-        },
+        name: "skills", label: "Technologies (compétences)", type: "tags", options: options.skills,
+        addLabel: "+ Ajouter une compétence…", noMoreText: "Toutes les compétences sont déjà ajoutées",
+        emptyText: "Aucune compétence associée à ce projet.",
+        help: "Choisissez dans la liste les compétences utilisées ; × pour en retirer une. Les compétences se créent dans l'onglet Compétences. Enregistrez le projet pour valider.",
       },
       { name: "demo_url", label: "Démonstration en ligne", type: "url", placeholder: "https://…", max: 300 },
       { name: "repo_url", label: "Dépôt GitHub", type: "url", placeholder: "https://github.com/…", max: 300 },

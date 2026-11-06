@@ -1,11 +1,13 @@
 from __future__ import annotations
 
 from django.db import transaction
+from django.utils.text import slugify
 from rest_framework import serializers
 
 from apps.core.i18n import TranslatedField, bilingual, translated
 from apps.core.serializer_mixins import SlugMixin
 from apps.core.services.uploads import asset_payload
+from apps.skills.models import Skill
 
 from .models import Category, Project, ProjectChallenge, ProjectImage, Technology
 
@@ -28,17 +30,17 @@ class PublicCategorySerializer(serializers.ModelSerializer):
         fields = ("slug", "name")
 
 
-class PublicTechnologySerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Technology
-        fields = ("slug", "name")
+def public_skills(project) -> list[dict]:
+    """Compétences publiées du projet, au format attendu par le site (« technologies » : slug + nom)."""
+    return [{"slug": slugify(skill.name) or f"skill-{skill.pk}", "name": skill.name}
+            for skill in project.skills.all() if skill.is_published]
 
 
 class PublicProjectCardSerializer(serializers.ModelSerializer):
     title = TranslatedField("title")
     summary = TranslatedField("summary")
     category = PublicCategorySerializer(read_only=True)
-    technologies = PublicTechnologySerializer(many=True, read_only=True)
+    technologies = serializers.SerializerMethodField()
     cover = serializers.SerializerMethodField()
 
     class Meta:
@@ -47,6 +49,9 @@ class PublicProjectCardSerializer(serializers.ModelSerializer):
             "slug", "title", "summary", "category", "technologies", "cover", "demo_url", "repo_url",
             "is_featured", "is_sample", "started_on",
         )
+
+    def get_technologies(self, obj):
+        return public_skills(obj)
 
     def get_cover(self, obj):
         lang = self.context["lang"]
@@ -157,7 +162,7 @@ class AdminChallengeSerializer(serializers.ModelSerializer):
 class AdminProjectSerializer(SlugMixin, serializers.ModelSerializer):
     slug_source = "title_fr"
     category = serializers.PrimaryKeyRelatedField(queryset=Category.objects.all())
-    technologies = serializers.PrimaryKeyRelatedField(queryset=Technology.objects.all(), many=True, required=False)
+    skills = serializers.PrimaryKeyRelatedField(queryset=Skill.objects.all(), many=True, required=False)
     challenges = AdminChallengeSerializer(many=True, required=False)
     cover = serializers.SerializerMethodField()
     architecture_image = serializers.SerializerMethodField()
@@ -169,7 +174,7 @@ class AdminProjectSerializer(SlugMixin, serializers.ModelSerializer):
             "id", "slug",
             *bilingual("title", "summary", "context", "problem", "objectives", "features", "architecture",
                        "results", "cover_alt", "architecture_alt"),
-            "category", "technologies", "challenges", "cover", "architecture_image", "images",
+            "category", "skills", "challenges", "cover", "architecture_image", "images",
             "demo_url", "repo_url", "started_on", "ended_on",
             "is_featured", "is_sample", "is_published", "display_order", "created_at", "updated_at",
         )

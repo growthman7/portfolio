@@ -98,70 +98,43 @@ function Repeater({ id, field, value, onChange }) {
 }
 
 /**
- * Sélection de plusieurs éléments par cases à cocher, avec pastilles et création à la volée.
- * field.onCreate(name) → { value, label } : crée l'élément côté API (facultatif).
+ * Sélection de plusieurs éléments : liste déroulante pour en ajouter, pastilles avec × pour en retirer.
+ * field.options : [{ value, label, group? }] ; les options d'un même `group` sont regroupées (<optgroup>).
  */
 function TagPicker({ id, field, value, onChange, errorId }) {
-  const [options, setOptions] = useState(field.options || []);
-  const [name, setName] = useState("");
-  const [status, setStatus] = useState({ busy: false, error: "" });
+  const options = field.options || [];
   const selected = new Set(value);
-  const labelOf = (v) => options.find((o) => String(o.value) === v)?.label || v;
-  const toggle = (v) => onChange(selected.has(v) ? value.filter((x) => x !== v) : [...value, v]);
-
-  const create = async () => {
-    const text = name.trim();
-    if (!text) return;
-    const existing = options.find((o) => o.label.toLowerCase() === text.toLowerCase());
-    if (existing) {
-      if (!selected.has(String(existing.value))) onChange([...value, String(existing.value)]);
-      setName("");
-      return;
-    }
-    setStatus({ busy: true, error: "" });
-    try {
-      const option = await field.onCreate(text);
-      setOptions((list) => [...list, option].sort((a, b) => a.label.localeCompare(b.label, "fr")));
-      onChange([...value, String(option.value)]);
-      setName("");
-      setStatus({ busy: false, error: "" });
-    } catch (error) {
-      setStatus({ busy: false, error: errorMessage(error) });
-    }
-  };
+  const labelOf = (v) => options.find((o) => String(o.value) === v)?.label || `#${v}`;
+  const available = options.filter((o) => !selected.has(String(o.value)));
+  const groups = [];
+  for (const option of available) {
+    const name = option.group || "";
+    let group = groups.find((g) => g.name === name);
+    if (!group) groups.push((group = { name, options: [] }));
+    group.options.push(option);
+  }
+  const add = (v) => { if (v && !selected.has(v)) onChange([...value, v]); };
+  const remove = (v) => onChange(value.filter((x) => x !== v));
 
   return (
-    <div className="tags" id={id} aria-describedby={errorId}>
+    <div className="tags">
+      <select id={id} className="input" value="" aria-describedby={errorId} disabled={!available.length}
+        onChange={(e) => add(e.target.value)}>
+        <option value="">{available.length ? field.addLabel || "Ajouter…" : field.noMoreText || "Tout est déjà sélectionné"}</option>
+        {groups.map((g) => (g.name ? (
+          <optgroup key={g.name} label={g.name}>
+            {g.options.map((o) => <option key={o.value} value={String(o.value)}>{o.label}</option>)}
+          </optgroup>
+        ) : g.options.map((o) => <option key={o.value} value={String(o.value)}>{o.label}</option>)))}
+      </select>
       <div className="tags__selected" aria-live="polite">
         {value.length ? value.map((v) => (
           <span key={v} className="tag">
             {labelOf(v)}
-            <button type="button" className="tag__remove" onClick={() => toggle(v)} aria-label={`Retirer ${labelOf(v)}`}>×</button>
+            <button type="button" className="tag__remove" onClick={() => remove(v)} aria-label={`Retirer ${labelOf(v)}`} title="Retirer">×</button>
           </span>
         )) : <span className="field__help">{field.emptyText || "Aucun élément sélectionné."}</span>}
       </div>
-      {options.length ? (
-        <fieldset className="tags__options">
-          <legend className="visually-hidden">{field.label}</legend>
-          {options.map((o) => (
-            <label key={o.value} className="tags__option">
-              <input type="checkbox" checked={selected.has(String(o.value))} onChange={() => toggle(String(o.value))} />
-              <span>{o.label}</span>
-            </label>
-          ))}
-        </fieldset>
-      ) : null}
-      {field.onCreate ? (
-        <div className="tags__create">
-          <input className="input" value={name} maxLength={field.createMax || 60} placeholder={field.createPlaceholder || "Nouvel élément"}
-            aria-label={field.createPlaceholder || "Nouvel élément"} onChange={(e) => setName(e.target.value)}
-            onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); create(); } }} />
-          <button className="btn btn--small" type="button" onClick={create} disabled={status.busy || !name.trim()}>
-            {status.busy ? "Ajout…" : field.createLabel || "+ Ajouter"}
-          </button>
-        </div>
-      ) : null}
-      {status.error ? <p className="field__error">{status.error}</p> : null}
     </div>
   );
 }

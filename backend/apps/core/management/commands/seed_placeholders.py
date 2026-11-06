@@ -28,7 +28,7 @@ from apps.career.models import (
 )
 from apps.core.models import SiteProfile, SocialLink
 from apps.core.services.uploads import store_image
-from apps.projects.models import Category, Project, ProjectChallenge, Technology
+from apps.projects.models import Category, Project, ProjectChallenge
 from apps.skills.models import Skill, SkillCategory
 
 SKILL_CATEGORIES = [
@@ -155,11 +155,6 @@ class Command(BaseCommand):
             profile.save()
 
     def _samples(self, publish: bool) -> None:
-        technologies = {
-            name: Technology.objects.get_or_create(slug=slug, defaults={"name": name})[0]
-            for slug, name in [("html", "HTML"), ("css", "CSS"), ("javascript", "JavaScript"), ("python", "Python"),
-                               ("django", "Django"), ("postgresql", "PostgreSQL"), ("docker", "Docker")]
-        }
         stacks = [
             ["HTML", "CSS", "JavaScript", "Django", "PostgreSQL"],
             ["Python", "Django", "PostgreSQL", "Docker"],
@@ -194,7 +189,8 @@ class Command(BaseCommand):
                 },
             )
             if created:
-                project.technologies.set([technologies[name] for name in stack])
+                # Compétences existantes portant ces noms (les autres sont ignorées).
+                project.skills.set(Skill.objects.filter(name__in=stack))
                 project.cover = store_image(placeholder_image(en, accent), "projects")
                 project.save(update_fields=["cover"])
                 ProjectChallenge.objects.create(

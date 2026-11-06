@@ -23,7 +23,7 @@ def published_projects():
     return (
         Project.objects.filter(is_published=True)
         .select_related("category", "cover", "architecture_image")
-        .prefetch_related("technologies")
+        .prefetch_related("skills")
     )
 
 
@@ -93,7 +93,7 @@ class AdminProjectViewSet(AdminModelViewSet):
 
     def get_queryset(self):
         queryset = Project.objects.select_related("category", "cover", "architecture_image").prefetch_related(
-            "technologies", "challenges", Prefetch("images", queryset=ProjectImage.objects.select_related("asset"))
+            "skills", "challenges", Prefetch("images", queryset=ProjectImage.objects.select_related("asset"))
         )
         params = self.request.query_params
         if params.get("status") == "published":

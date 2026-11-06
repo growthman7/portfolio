@@ -155,7 +155,7 @@ def build_project_head(project, lang: str) -> str:
         "url": url,
         "image": image_url,
         "inLanguage": lang,
-        "keywords": [tech.name for tech in project.technologies.all()],
+        "keywords": [skill.name for skill in project.skills.all() if skill.is_published],
         "dateModified": project.updated_at.isoformat() if project.updated_at else None,
     }
     if project.repo_url:
@@ -286,7 +286,7 @@ def regenerate(target_dir: Path | None = None) -> list[str]:
         written.append(relative)
 
     projects = list(
-        Project.objects.filter(is_published=True).select_related("cover").prefetch_related("technologies")
+        Project.objects.filter(is_published=True).select_related("cover").prefetch_related("skills")
     )
     written += write_project_pages(target, template, projects)
     _atomic_write(target / "sitemap.xml", build_sitemap(projects))

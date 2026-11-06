@@ -8,7 +8,8 @@ from PIL import Image
 from apps.audit.models import AuditLog
 from apps.core.models import MediaAsset
 from apps.core.tests.base import PortfolioAPITestCase, image_upload, png_bytes
-from apps.projects.models import Category, Project, Technology
+from apps.projects.models import Category, Project
+from apps.skills.models import Skill, SkillCategory
 
 
 class ProjectFixtures(PortfolioAPITestCase):
@@ -16,12 +17,14 @@ class ProjectFixtures(PortfolioAPITestCase):
         super().setUp()
         self.frontend = Category.objects.create(name_fr="Frontend", name_en="Frontend", slug="frontend")
         self.backend = Category.objects.create(name_fr="Backend", slug="backend")
-        self.django = Technology.objects.create(name="Django", slug="django")
+        backend_skills = SkillCategory.objects.create(kind="backend", name_fr="Backend", slug="backend")
+        self.django = Skill.objects.create(category=backend_skills, name="Django", is_published=True)
+        self.hidden_skill = Skill.objects.create(category=backend_skills, name="Interne", is_published=False)
         self.published = Project.objects.create(
             title_fr="Projet publié", title_en="Published project", slug="publie", summary_fr="Résumé",
             category=self.backend, is_published=True,
         )
-        self.published.technologies.add(self.django)
+        self.published.skills.add(self.django, self.hidden_skill)
         self.draft = Project.objects.create(title_fr="Brouillon", slug="brouillon", summary_fr="Secret", category=self.frontend)
 
 
@@ -58,6 +61,10 @@ class PublicProjectTests(ProjectFixtures):
         for field in ("id", "is_published", "display_order", "created_at", "title_fr"):
             self.assertNotIn(field, data)
 
+    def test_public_technologies_are_the_published_skills(self):
+        data = self.client.get("/api/v1/projects/publie/").json()
+        self.assertEqual(data["technologies"], [{"slug": "django", "name": "Django"}])
+
     def test_public_categories_only_list_used_ones(self):
         slugs = [c["slug"] for c in self.client.get("/api/v1/categories/").json()]
         self.assertEqual(slugs, ["backend"])
@@ -69,12 +76,27 @@ class AdminProjectTests(ProjectFixtures):
         response = client.post(
             "/api/v1/admin/projects/",
             {"title_fr": "Mon Projet Été", "summary_fr": "Résumé", "category": self.frontend.pk,
-             "technologies": [self.django.pk], "repo_url": "https://github.com/exemple/projet"},
+             "skills": [self.django.pk], "repo_url": "https://github.com/exemple/projet"},
             format="json",
         )
         self.assertEqual(response.status_code, 201, response.content)
         self.assertEqual(response.json()["slug"], "mon-projet-ete")
+        self.assertEqual(response.json()["skills"], [self.django.pk])
         self.assertTrue(AuditLog.objects.filter(action=AuditLog.Action.CREATE, target_type="projects.project").exists())
+
+    def test_skills_are_many_to_many_and_removable(self):
+        """Une compétence peut servir à plusieurs projets ; un projet utilise plusieurs compétences."""
+        client = self.admin_client()
+        python = Skill.objects.create(category=self.django.category, name="Python", is_published=True)
+        for project in (self.published, self.draft):
+            response = client.patch(f"/api/v1/admin/projects/{project.pk}/", {"skills": [self.django.pk, python.pk]}, format="json")
+            self.assertEqual(response.status_code, 200, response.content)
+        self.assertEqual(set(self.django.projects.values_list("slug", flat=True)), {"publie", "brouillon"})
+        self.assertEqual(self.published.skills.count(), 2)
+        response = client.patch(f"/api/v1/admin/projects/{self.published.pk}/", {"skills": [python.pk]}, format="json")
+        self.assertEqual(response.json()["skills"], [python.pk])
+        self.assertEqual(list(self.draft.skills.order_by("name").values_list("name", flat=True)), ["Django", "Python"])
+        self.assertTrue(Skill.objects.filter(pk=self.django.pk).exists())  # retirer ≠ supprimer la compétence
 
     def test_insecure_urls_are_rejected(self):
         client = self.admin_client()
