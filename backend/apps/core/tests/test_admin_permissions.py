@@ -86,24 +86,7 @@ class AuthorizationMatrixTests(PortfolioAPITestCase):
         self.assertEqual(response.status_code, 201)
 
 
-class DashboardPageTests(PortfolioAPITestCase):
-    def test_dashboard_page_requires_admin(self):
-        prefix = settings.DASHBOARD_PREFIX
-        response = self.client.get(f"/{prefix}/")
-        self.assertRedirects(response, f"/{prefix}/connexion/", fetch_redirect_response=False)
-        staff = APIClient()
-        staff.force_login(self.staff_not_admin)
-        self.assertEqual(staff.get(f"/{prefix}/").status_code, 302)
-        response = self.admin_client().get(f"/{prefix}/")
-        self.assertEqual(response.status_code, 200)
-        self.assertIn("script-src 'self'", response["Content-Security-Policy"])
-        self.assertIn("no-store", response["Cache-Control"])
-        self.assertIn("pf_csrftoken", response.cookies)
-
-    def test_login_page_is_public(self):
-        response = self.client.get(f"/{settings.DASHBOARD_PREFIX}/connexion/")
-        self.assertEqual(response.status_code, 200)
-
+class DashboardStatsTests(PortfolioAPITestCase):
     def test_stats_payload(self):
         data = self.admin_client().get("/api/v1/admin/dashboard/").json()
         self.assertEqual(len(data["messages"]["timeline"]), 30)

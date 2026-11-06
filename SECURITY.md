@@ -16,7 +16,7 @@ Ce document décrit les menaces prises en compte et les protections mises en œu
 
 | Risque | Mesures | Où |
 |---|---|---|
-| **A01 Contrôle d'accès défaillant** | Refus par défaut (`IsAuthenticated`), rôle `IsPortfolioAdmin` + `DjangoModelPermissions` (y compris lecture) sur chaque route admin ; querysets publics filtrés sur `is_published` ; dashboard rendu seulement pour un administrateur ; liste blanche d'IP optionnelle | `apps/core/permissions.py`, `apps/core/viewsets.py`, `apps/dashboard/views.py`, `apps/core/middleware/admin_guard.py` |
+| **A01 Contrôle d'accès défaillant** | Refus par défaut (`IsAuthenticated`), rôle `IsPortfolioAdmin` + `DjangoModelPermissions` (y compris lecture) sur chaque route admin ; querysets publics filtrés sur `is_published` ; la page d'administration React ne contient aucune donnée et chaque écran vérifie la session via `auth/me/` (le serveur reste seul juge) ; liste blanche d'IP optionnelle | `apps/core/permissions.py`, `apps/core/viewsets.py`, `apps/accounts/views.py`, `apps/core/middleware/admin_guard.py` |
 | **A02 Mauvaise configuration** | Paramètres séparés dev/prod/test ; `DEBUG=False` ; démarrage refusé si la clé secrète est faible ; `check --deploy` sans alerte ; Django Admin non installé ; fichiers cachés refusés par Nginx | `config/settings/`, `deploy/nginx/portfolio.conf` |
 | **A03 Chaîne d'approvisionnement** | Dépendances minimales et encadrées, verrouillage avec empreintes documenté, `pip-audit` en CI, aucune ressource tierce côté navigateur | `backend/requirements/`, `.github/workflows/ci.yml` |
 | **A04 Défaillances cryptographiques** | HTTPS imposé + HSTS ; Argon2id ; secrets hors dépôt ; IP stockées en HMAC-SHA256 salé ; sauvegardes chiffrées AES-256 | `config/settings/prod.py`, `apps/core/net.py`, `deploy/scripts/backup_db.sh` |
@@ -45,7 +45,7 @@ Ce document décrit les menaces prises en compte et les protections mises en œu
 ## Détails par exigence du cahier des charges
 
 - **Injections SQL** : ORM Django (requêtes paramétrées) ; aucun `raw()` ni `cursor.execute` avec données utilisateur ; rôle applicatif PostgreSQL limité à `SELECT/INSERT/UPDATE/DELETE` (vérifié : `DROP`, `ALTER`, `CREATE` refusés).
-- **XSS** : aucune utilisation de `innerHTML` dans le frontend ni le dashboard ; aucun HTML utilisateur n'est autorisé (donc rien à assainir) ; CSP `script-src 'self'; style-src 'self'` sans exception ; aucun attribut `style` ni script en ligne.
+- **XSS** : aucune utilisation de `innerHTML` ni de `dangerouslySetInnerHTML` dans le site ni dans l'administration (React échappe tout le texte) ; aucun HTML utilisateur n'est autorisé (donc rien à assainir) ; CSP `script-src 'self'; style-src 'self'` sans exception ; aucun attribut `style` ni script en ligne.
 - **CSRF** : jetons Django vérifiés côté serveur ; cookies `SameSite=Lax` ; contrôle de l'en-tête `Origin` par Django en HTTPS ; `CSRF_TRUSTED_ORIGINS` explicite.
 - **Cookies** : session `HttpOnly`, `Secure`, `SameSite=Lax`, 8 h glissantes, expirée à la fermeture du navigateur. Le cookie CSRF est lisible par le JavaScript (fonctionnement standard Django) mais inutile sans la session.
 - **Téléversements** : extension + MIME annoncé + contenu réel (décodage complet Pillow), bombes de décompression rejetées, ré-encodage WebP/AVIF sans métadonnées, nom UUID, dossier imposé par le serveur, stockage hors code, Nginx n'accepte que `.webp`, `.avif` et `.pdf` sous `/media/`.

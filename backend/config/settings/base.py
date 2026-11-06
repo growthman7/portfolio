@@ -79,10 +79,9 @@ INSTALLED_APPS = [
     "apps.skills",
     "apps.career",
     "apps.contact",
-    "apps.dashboard",
 ]
 # Django Admin n'est volontairement pas installé : l'administration passe
-# exclusivement par le dashboard personnalisé et l'API protégée.
+# exclusivement par la page d'administration React (frontend/admin.html) et l'API protégée.
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
@@ -107,13 +106,12 @@ ASGI_APPLICATION = "config.asgi.application"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [BASE_DIR / "templates"],
+        "DIRS": [],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
                 "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
-                "apps.dashboard.context_processors.dashboard",
             ],
         },
     }
@@ -288,7 +286,6 @@ USE_TZ = True
 # ---------------------------------------------------------------------------
 STATIC_URL = "/static/"
 STATIC_ROOT = Path(env.str("DJANGO_STATIC_ROOT", default=str(BASE_DIR / "staticfiles")))
-STATICFILES_DIRS = [BASE_DIR / "static"]
 
 MEDIA_URL = "/media/"
 MEDIA_ROOT = Path(env.str("DJANGO_MEDIA_ROOT", default=str(BASE_DIR / "media")))

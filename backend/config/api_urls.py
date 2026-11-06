@@ -12,7 +12,6 @@ public = [
 
 # Toutes ces routes exigent : session valide + rôle administrateur + permission sur le modèle.
 admin = [
-    path("", include("apps.dashboard.admin_urls")),
     path("", include("apps.core.admin_urls")),
     path("", include("apps.projects.admin_urls")),
     path("", include("apps.skills.admin_urls")),

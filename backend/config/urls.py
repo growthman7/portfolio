@@ -15,7 +15,6 @@ def api_not_found(request, exception=None):
 urlpatterns = [
     path("api/v1/", include("config.api_urls")),
     re_path(r"^api/", api_not_found),
-    path(f"{settings.DASHBOARD_PREFIX}/", include("apps.dashboard.urls")),
     path("healthz/", healthz),
 ]
 
@@ -26,6 +25,12 @@ if getattr(settings, "SERVE_FRONTEND", False):
     # Pour développer le frontend avec rechargement à chaud, préférez « npm run dev » (port 5173).
     def frontend(request, path=""):
         root = Path(settings.FRONTEND_BUILD_DIR)
+        # Page d'administration React : une seule page (admin.html) pour toutes les adresses sous le préfixe.
+        is_admin_page = path == settings.DASHBOARD_PREFIX or path.startswith(f"{settings.DASHBOARD_PREFIX}/")
+        if is_admin_page and (root / "admin.html").is_file():
+            response = serve(request, "admin.html", document_root=root)
+            response["Cache-Control"] = "no-store"
+            return response
         if path == "" or path.endswith("/"):
             path += "index.html"
         if (root / path).is_file():

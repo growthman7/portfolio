@@ -2,6 +2,7 @@ from django.urls import path, re_path
 from rest_framework.parsers import MultiPartParser
 from rest_framework.routers import SimpleRouter
 
+from .admin_stats import DashboardStatsView
 from .views import AdminProfileViewSet, AdminSocialLinkViewSet
 
 router = SimpleRouter()
@@ -14,6 +15,7 @@ og_image = AdminProfileViewSet.as_view({"post": "og_image", "delete": "og_image"
 cv = AdminProfileViewSet.as_view({"post": "cv", "delete": "cv"}, **upload)
 
 urlpatterns = [
+    path("dashboard/", DashboardStatsView.as_view(), name="admin-dashboard"),
     path("profile/", profile, name="admin-profile"),
     path("profile/photo/", photo, name="admin-profile-photo"),
     path("profile/og-image/", og_image, name="admin-profile-og-image"),

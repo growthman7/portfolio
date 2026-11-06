@@ -37,7 +37,7 @@ def notify_owner(message: ContactMessage) -> None:
         f"Nouveau message reçu depuis le portfolio.\n\n"
         f"Nom : {message.name}\nE-mail : {message.email}\nObjet : {message.subject}\n"
         f"Langue : {message.language}\n\n{message.message}\n\n"
-        f"— Consultez le tableau de bord : {settings.SITE_URL}/{settings.DASHBOARD_PREFIX}/#/messages/{message.pk}"
+        f"— Consultez le tableau de bord : {settings.SITE_URL}/{settings.DASHBOARD_PREFIX}/messages/{message.pk}"
     )
     email = EmailMessage(
         subject=f"[Portfolio] {message.subject}"[:150],

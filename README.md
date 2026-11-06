@@ -7,7 +7,7 @@ Portfolio professionnel bilingue (FR/EN), au style minimaliste et immersif (noir
 | Site public | React 19 + React Router 7, construit avec Vite 8 | `frontend/` |
 | API REST | Django 5.2 LTS + Django REST Framework | `backend/` |
 | Base de données | PostgreSQL 16 (psycopg 3) | — |
-| Administration | Dashboard personnalisé (pas l'admin Django) | `/gestion/` |
+| Administration | Page React dédiée (pas l'admin Django), branchée sur l'API protégée | `frontend/admin.html`, servie sous `/gestion/` |
 
 Autres caractéristiques :
 
@@ -21,10 +21,12 @@ Autres caractéristiques :
 
 ```
 portfolio-v2/
-├── frontend/                         Site public (React + Vite)
-│   ├── index.html                    Page unique ; son bloc <!-- seo:start/end --> est rempli par le backend
-│   ├── vite.config.js                Proxy de développement vers Django (/api, /media, dashboard)
+├── frontend/                         Site public et administration (React + Vite)
+│   ├── index.html                    Site public ; son bloc <!-- seo:start/end --> est rempli par le backend
+│   ├── admin.html                    Page d'administration, servie pour toutes les adresses sous /<DASHBOARD_PREFIX>/
+│   ├── vite.config.js                Deux entrées (site, admin) ; proxy de développement vers Django (/api, /media)
 │   ├── src/
+│   │   ├── admin/                    Administration : connexion, session (auth.jsx), API (api.js), formulaires, pages
 │   │   ├── main.jsx, App.jsx         Point d'entrée et routes (/, /en/, /projets/:slug/, /en/projects/:slug/, pages légales, 404)
 │   │   ├── api/                      client.js (API REST, CSRF, délais, erreurs) et SiteDataContext (GET /api/v1/site/)
 │   │   ├── i18n/                     Textes FR/EN, routes par langue, formats de date
@@ -39,23 +41,19 @@ portfolio-v2/
 │   ├── manage.py
 │   ├── config/                       settings/ (base, dev, prod, test), urls.py, api_urls.py
 │   ├── apps/
-│   │   ├── core/                     Profil, réseaux, fichiers, middlewares, permissions, limitation de débit, SEO, commandes
+│   │   ├── core/                     Profil, réseaux, fichiers, statistiques admin, middlewares, permissions, limitation de débit, SEO, commandes
 │   │   ├── accounts/                 Connexion, mot de passe, création contrôlée de l'administrateur
 │   │   ├── projects/                 Catégories, technologies, projets, difficultés/solutions, captures
 │   │   ├── skills/                   Catégories de compétences, compétences
 │   │   ├── career/                   Expériences et stages, missions, formations, certifications, réalisations
 │   │   ├── contact/                  Messages, anti-spam, notification par e-mail
-│   │   ├── audit/                    Journal d'audit
-│   │   └── dashboard/                Pages et statistiques du dashboard
-│   ├── templates/dashboard/          Gabarits HTML du dashboard
-│   ├── static/dashboard/             CSS et JS du dashboard
+│   │   └── audit/                    Journal d'audit
 │   └── requirements/                 base.txt, dev.txt, prod.txt
 ├── deploy/                           docker/, nginx/, scripts/ (sauvegardes chiffrées)
 ├── docs/                             api.md, database.md, schema.sql
 ├── docker-compose.yml                PostgreSQL de développement
 ├── docker-compose.prod.yml           Production
-├── .env.example                      Modèle de configuration (aucun secret réel)
-└── .github/workflows/ci.yml          Tests, audit des dépendances, vérifications de configuration
+└── .env.example                      Modèle de configuration (aucun secret réel)
 ```
 
 ## 2. Prérequis
@@ -78,7 +76,7 @@ docker compose up -d db              # ou un PostgreSQL local
 # 3. Configuration
 cp .env.example .env
 #   DJANGO_SECRET_KEY : python -c "import secrets; print(secrets.token_urlsafe(64))"
-#   POSTGRES_DB=portfolio_v2, POSTGRES_USER, POSTGRES_PASSWORD, POSTGRES_HOST=localhost
+#   POSTGRES_DB=portfolio_v2, POSTGRES_USER=postgres, POSTGRES_PASSWORD=devpass, POSTGRES_HOST=localhost (développement)
 #   SITE_URL=http://localhost:8000, TRUST_PROXY_HEADERS=false
 #   (DJANGO_SECRET_KEY et IP_HASH_SALT sont générés automatiquement en développement s'ils manquent)
 
@@ -103,11 +101,11 @@ npm run dev
 
 Adresses locales (développement) :
 
-- site : http://localhost:5173/ (version anglaise : `/en/`) ;
-- page projet : http://localhost:5173/projets/<slug>/ ;
-- dashboard : http://localhost:5173/<DASHBOARD_PREFIX>/ (ou directement sur le port 8000).
+- site : http://localhost:5174/ (version anglaise : `/en/`) ;
+- page projet : http://localhost:5174/projets/<slug>/ ;
+- administration : http://localhost:5174/<DASHBOARD_PREFIX>/ (connexion : `/<DASHBOARD_PREFIX>/connexion`), ou sur le port 8000 après `npm run build`.
 
-**Connexion frontend ↔ backend :** le serveur Vite relaie `/api`, `/media`, `/static` et le dashboard vers Django (`http://127.0.0.1:8000`, modifiable avec `VITE_BACKEND_URL` dans `.env`). Le navigateur ne voit qu'une seule origine, comme en production derrière Nginx : cookies de session et jeton CSRF fonctionnent sans CORS. Les e-mails s'affichent dans la console.
+**Connexion frontend ↔ backend :** le serveur Vite sert le site et la page d'administration, et relaie `/api`, `/media` et `/static` vers Django (`http://127.0.0.1:8000`, modifiable avec `VITE_BACKEND_URL` dans `.env`). Le navigateur ne voit qu'une seule origine, comme en production derrière Nginx : cookies de session et jeton CSRF fonctionnent sans CORS. Les e-mails s'affichent dans la console.
 
 **Tester la version de production en local :** `npm run build` dans `frontend/`, puis `python manage.py build_seo` dans `backend/`. Django sert alors `frontend/dist` sur http://localhost:8000/, comme Nginx (vraie page 404 comprise).
 
@@ -122,7 +120,14 @@ Aucune information personnelle n'est inventée. Tout le contenu de départ est m
 
 Le dashboard signale les projets d'exemple encore publiés. Remplacez-les ou dépubliez-les avant la mise en ligne.
 
-## 5. Dashboard (`/gestion/`)
+## 5. Administration (`/gestion/`)
+
+Page React (`frontend/src/admin/`) servie pour toutes les adresses sous `/<DASHBOARD_PREFIX>/`. Elle ne contient aucune donnée : la connexion passe par l'API `/api/v1/auth/` (session HttpOnly + jeton CSRF) et chaque écran par `/api/v1/admin/`, protégée côté serveur.
+
+| Écran | Adresse | API |
+|---|---|---|
+| Connexion | `/<préfixe>/connexion` | `POST auth/login/`, `GET auth/me/`, `POST auth/logout/` |
+| Mot de passe oublié | `/<préfixe>/reinitialisation[/<uid>/<token>]` | `POST auth/password/reset/`, `POST auth/password/reset/confirm/` |
 
 | Écran | Fonctions |
 |---|---|

@@ -1,4 +1,4 @@
-/* Dashboard d'administration — même identité que le site public, densité adaptée à la gestion. */
+/* Page d'administration (React) — même identité que le site public, densité adaptée à la gestion. */
 @font-face { font-family: "Instrument Serif"; src: url("/assets/fonts/instrument-serif-regular.woff2") format("woff2"); font-display: swap; }
 @font-face { font-family: "Geist"; src: url("/assets/fonts/geist-variable.woff2") format("woff2"); font-weight: 100 900; font-display: swap; }
 @font-face { font-family: "Geist Mono"; src: url("/assets/fonts/geist-mono-regular.woff2") format("woff2"); font-display: swap; }
@@ -34,7 +34,7 @@ img { display: block; max-width: 100%; }
 .sidebar__nav { display: flex; gap: 4px; }
 .sidebar__link { display: flex; align-items: center; gap: 10px; padding: 8px 12px; border-radius: 10px; color: var(--muted); text-decoration: none; white-space: nowrap; }
 .sidebar__link:hover { color: var(--text); background: var(--surface-2); }
-.sidebar__link[aria-current="page"] { color: var(--text); background: var(--surface-3); box-shadow: inset 2px 0 0 var(--blue); }
+.sidebar__link[aria-current="page"], .sidebar__link.active { color: var(--text); background: var(--surface-3); box-shadow: inset 2px 0 0 var(--blue); }
 .sidebar__badge { margin-left: auto; min-width: 20px; padding: 0 6px; border-radius: 999px; background: var(--red); color: #fff; font: 600 0.72rem/20px var(--mono); text-align: center; }
 .sidebar__footer { display: flex; gap: 8px; margin-left: auto; }
 .main { padding: 24px 16px 64px; min-width: 0; }
@@ -176,3 +176,8 @@ select.input[multiple] { min-height: 140px; }
 
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } }
 .meta-list + .activity { margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--line); }
+
+/* ---------- Compléments React ---------- */
+.loading--full { min-height: 100vh; display: grid; place-items: center; }
+.sidebar__user { color: var(--faint); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.main:focus { outline: none; }

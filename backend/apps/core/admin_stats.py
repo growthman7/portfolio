@@ -1,17 +1,9 @@
-"""
-Pages HTML du dashboard. Le HTML ne contient aucune donnée : tout passe par l'API
-d'administration, protégée côté serveur. La page principale n'est rendue qu'à un
-administrateur authentifié ; sinon, redirection vers la page de connexion.
-"""
+"""Statistiques de la vue d'ensemble du dashboard (page React d'administration)."""
 from datetime import timedelta
 
-from django.conf import settings
 from django.db.models import Count
 from django.db.models.functions import TruncDate
-from django.shortcuts import redirect, render
 from django.utils import timezone
-from django.views.decorators.cache import never_cache
-from django.views.decorators.csrf import ensure_csrf_cookie
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -20,33 +12,10 @@ from apps.audit.serializers import AuditLogSerializer
 from apps.career.models import Achievement, Certification, Education, Experience
 from apps.contact.models import ContactMessage
 from apps.contact.serializers import AdminContactMessageSerializer
-from apps.core.permissions import IsPortfolioAdmin, is_portfolio_admin
 from apps.projects.models import Project
 from apps.skills.models import Skill
 
-
-@never_cache
-@ensure_csrf_cookie
-def app_view(request):
-    if not is_portfolio_admin(request.user):
-        return redirect(f"/{settings.DASHBOARD_PREFIX}/connexion/")
-    return render(request, "dashboard/app.html")
-
-
-@never_cache
-@ensure_csrf_cookie
-def login_view(request):
-    if is_portfolio_admin(request.user):
-        return redirect(f"/{settings.DASHBOARD_PREFIX}/")
-    return render(request, "dashboard/login.html")
-
-
-@never_cache
-@ensure_csrf_cookie
-def password_reset_view(request, uidb64=None, token=None):
-    if not settings.PASSWORD_RESET_ENABLED:
-        return redirect(f"/{settings.DASHBOARD_PREFIX}/connexion/")
-    return render(request, "dashboard/password_reset.html", {"uid": uidb64 or "", "token": token or ""})
+from .permissions import IsPortfolioAdmin
 
 
 class DashboardStatsView(APIView):

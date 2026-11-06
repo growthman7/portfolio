@@ -9,10 +9,10 @@ logger = logging.getLogger("portfolio.security")
 
 @receiver(post_migrate)
 def ensure_admin_group(sender, app_config=None, **kwargs):
-    # Exécuté après la dernière application installée (dashboard), quand toutes les permissions existent.
-    if app_config is not None and app_config.label == "dashboard":
-        from .services import sync_admin_group
+    # Exécuté après chaque application gérée : la dernière synchronisation dispose de toutes les permissions.
+    from .services import MANAGED_APPS, sync_admin_group
 
+    if app_config is not None and app_config.label in MANAGED_APPS:
         sync_admin_group()
 
 
