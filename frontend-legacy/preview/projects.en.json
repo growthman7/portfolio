@@ -1,0 +1,517 @@
+{
+  "exemple-application-web": {
+    "slug": "exemple-application-web",
+    "title": "[Sample] Web application",
+    "summary": "Fictional project used to preview the layout. Replace it with a real project from the admin.",
+    "category": {
+      "slug": "full-stack",
+      "name": "Full Stack"
+    },
+    "technologies": [
+      {
+        "slug": "django",
+        "name": "Django"
+      },
+      {
+        "slug": "postgresql",
+        "name": "PostgreSQL"
+      },
+      {
+        "slug": "javascript",
+        "name": "JavaScript"
+      },
+      {
+        "slug": "docker",
+        "name": "Docker"
+      }
+    ],
+    "cover": null,
+    "demo_url": "https://example.com/",
+    "repo_url": "https://example.com/repo",
+    "is_featured": true,
+    "is_sample": true,
+    "started_on": "2024-03-01",
+    "ended_on": null,
+    "context": "[TO REPLACE] Where this project came from: client, team, starting constraints.\n[TO REPLACE] An optional second paragraph.",
+    "problem": "[TO REPLACE] The problem to solve, and for whom.",
+    "objectives": "[Objective 1]\n[Objective 2]\n[Objective 3]",
+    "features": "[Feature 1]\n[Feature 2]\n[Feature 3]\n[Feature 4]",
+    "architecture": "[TO REPLACE] Technical layout: frontend, backend, database, hosting, how the parts talk to each other.",
+    "architecture_image": null,
+    "images": [
+      {
+        "image": {
+          "src": "../preview/img/capture-1.webp",
+          "srcset": "../preview/img/capture-1.webp 1600w",
+          "sources": {
+            "webp": {
+              "srcset": "../preview/img/capture-1.webp 1600w",
+              "src": "../preview/img/capture-1.webp"
+            }
+          },
+          "width": 1600,
+          "height": 1000,
+          "alt": "Sample screenshot: main screen"
+        },
+        "caption": "Main screen (sample)"
+      },
+      {
+        "image": {
+          "src": "../preview/img/capture-2.webp",
+          "srcset": "../preview/img/capture-2.webp 1600w",
+          "sources": {
+            "webp": {
+              "srcset": "../preview/img/capture-2.webp 1600w",
+              "src": "../preview/img/capture-2.webp"
+            }
+          },
+          "width": 1600,
+          "height": 1000,
+          "alt": "Sample screenshot: detail view"
+        },
+        "caption": "Detail view (sample)"
+      },
+      {
+        "image": {
+          "src": "../preview/img/capture-3.webp",
+          "srcset": "../preview/img/capture-3.webp 1600w",
+          "sources": {
+            "webp": {
+              "srcset": "../preview/img/capture-3.webp 1600w",
+              "src": "../preview/img/capture-3.webp"
+            }
+          },
+          "width": 1600,
+          "height": 1000,
+          "alt": "Sample screenshot: statistics"
+        },
+        "caption": "Statistics (sample)"
+      }
+    ],
+    "challenges": [
+      {
+        "challenge": "[Challenge faced]",
+        "solution": "[Solution applied]"
+      },
+      {
+        "challenge": "[Another challenge]",
+        "solution": "[Matching solution]"
+      }
+    ],
+    "results": "[TO REPLACE] Results: what changed, measured figures if you have them.",
+    "previous": null,
+    "next": {
+      "slug": "exemple-api-rest",
+      "title": "[Sample] REST API"
+    }
+  },
+  "exemple-api-rest": {
+    "slug": "exemple-api-rest",
+    "title": "[Sample] REST API",
+    "summary": "Fictional project used to preview the layout. Replace it with a real project from the admin.",
+    "category": {
+      "slug": "backend",
+      "name": "Backend"
+    },
+    "technologies": [
+      {
+        "slug": "python",
+        "name": "Python"
+      },
+      {
+        "slug": "django",
+        "name": "Django"
+      },
+      {
+        "slug": "postgresql",
+        "name": "PostgreSQL"
+      }
+    ],
+    "cover": null,
+    "demo_url": "https://example.com/",
+    "repo_url": "https://example.com/repo",
+    "is_featured": false,
+    "is_sample": true,
+    "started_on": "2024-01-01",
+    "ended_on": "2024-06-30",
+    "context": "[TO REPLACE] Where this project came from: client, team, starting constraints.\n[TO REPLACE] An optional second paragraph.",
+    "problem": "[TO REPLACE] The problem to solve, and for whom.",
+    "objectives": "[Objective 1]\n[Objective 2]\n[Objective 3]",
+    "features": "[Feature 1]\n[Feature 2]\n[Feature 3]\n[Feature 4]",
+    "architecture": "[TO REPLACE] Technical layout: frontend, backend, database, hosting, how the parts talk to each other.",
+    "architecture_image": null,
+    "images": [
+      {
+        "image": {
+          "src": "../preview/img/capture-1.webp",
+          "srcset": "../preview/img/capture-1.webp 1600w",
+          "sources": {
+            "webp": {
+              "srcset": "../preview/img/capture-1.webp 1600w",
+              "src": "../preview/img/capture-1.webp"
+            }
+          },
+          "width": 1600,
+          "height": 1000,
+          "alt": "Sample screenshot: main screen"
+        },
+        "caption": "Main screen (sample)"
+      },
+      {
+        "image": {
+          "src": "../preview/img/capture-2.webp",
+          "srcset": "../preview/img/capture-2.webp 1600w",
+          "sources": {
+            "webp": {
+              "srcset": "../preview/img/capture-2.webp 1600w",
+              "src": "../preview/img/capture-2.webp"
+            }
+          },
+          "width": 1600,
+          "height": 1000,
+          "alt": "Sample screenshot: detail view"
+        },
+        "caption": "Detail view (sample)"
+      },
+      {
+        "image": {
+          "src": "../preview/img/capture-3.webp",
+          "srcset": "../preview/img/capture-3.webp 1600w",
+          "sources": {
+            "webp": {
+              "srcset": "../preview/img/capture-3.webp 1600w",
+              "src": "../preview/img/capture-3.webp"
+            }
+          },
+          "width": 1600,
+          "height": 1000,
+          "alt": "Sample screenshot: statistics"
+        },
+        "caption": "Statistics (sample)"
+      }
+    ],
+    "challenges": [
+      {
+        "challenge": "[Challenge faced]",
+        "solution": "[Solution applied]"
+      },
+      {
+        "challenge": "[Another challenge]",
+        "solution": "[Matching solution]"
+      }
+    ],
+    "results": "[TO REPLACE] Results: what changed, measured figures if you have them.",
+    "previous": {
+      "slug": "exemple-application-web",
+      "title": "[Sample] Web application"
+    },
+    "next": {
+      "slug": "exemple-interface",
+      "title": "[Sample] Responsive interface"
+    }
+  },
+  "exemple-interface": {
+    "slug": "exemple-interface",
+    "title": "[Sample] Responsive interface",
+    "summary": "Fictional project used to preview the layout. Replace it with a real project from the admin.",
+    "category": {
+      "slug": "frontend",
+      "name": "Frontend"
+    },
+    "technologies": [
+      {
+        "slug": "html",
+        "name": "HTML"
+      },
+      {
+        "slug": "css",
+        "name": "CSS"
+      },
+      {
+        "slug": "javascript",
+        "name": "JavaScript"
+      }
+    ],
+    "cover": null,
+    "demo_url": "https://example.com/",
+    "repo_url": "https://example.com/repo",
+    "is_featured": false,
+    "is_sample": true,
+    "started_on": "2023-09-01",
+    "ended_on": "2024-06-30",
+    "context": "[TO REPLACE] Where this project came from: client, team, starting constraints.\n[TO REPLACE] An optional second paragraph.",
+    "problem": "[TO REPLACE] The problem to solve, and for whom.",
+    "objectives": "[Objective 1]\n[Objective 2]\n[Objective 3]",
+    "features": "[Feature 1]\n[Feature 2]\n[Feature 3]\n[Feature 4]",
+    "architecture": "[TO REPLACE] Technical layout: frontend, backend, database, hosting, how the parts talk to each other.",
+    "architecture_image": null,
+    "images": [
+      {
+        "image": {
+          "src": "../preview/img/capture-1.webp",
+          "srcset": "../preview/img/capture-1.webp 1600w",
+          "sources": {
+            "webp": {
+              "srcset": "../preview/img/capture-1.webp 1600w",
+              "src": "../preview/img/capture-1.webp"
+            }
+          },
+          "width": 1600,
+          "height": 1000,
+          "alt": "Sample screenshot: main screen"
+        },
+        "caption": "Main screen (sample)"
+      },
+      {
+        "image": {
+          "src": "../preview/img/capture-2.webp",
+          "srcset": "../preview/img/capture-2.webp 1600w",
+          "sources": {
+            "webp": {
+              "srcset": "../preview/img/capture-2.webp 1600w",
+              "src": "../preview/img/capture-2.webp"
+            }
+          },
+          "width": 1600,
+          "height": 1000,
+          "alt": "Sample screenshot: detail view"
+        },
+        "caption": "Detail view (sample)"
+      },
+      {
+        "image": {
+          "src": "../preview/img/capture-3.webp",
+          "srcset": "../preview/img/capture-3.webp 1600w",
+          "sources": {
+            "webp": {
+              "srcset": "../preview/img/capture-3.webp 1600w",
+              "src": "../preview/img/capture-3.webp"
+            }
+          },
+          "width": 1600,
+          "height": 1000,
+          "alt": "Sample screenshot: statistics"
+        },
+        "caption": "Statistics (sample)"
+      }
+    ],
+    "challenges": [
+      {
+        "challenge": "[Challenge faced]",
+        "solution": "[Solution applied]"
+      },
+      {
+        "challenge": "[Another challenge]",
+        "solution": "[Matching solution]"
+      }
+    ],
+    "results": "[TO REPLACE] Results: what changed, measured figures if you have them.",
+    "previous": {
+      "slug": "exemple-api-rest",
+      "title": "[Sample] REST API"
+    },
+    "next": {
+      "slug": "exemple-tableau-de-bord",
+      "title": "[Sample] Data dashboard"
+    }
+  },
+  "exemple-tableau-de-bord": {
+    "slug": "exemple-tableau-de-bord",
+    "title": "[Sample] Data dashboard",
+    "summary": "Fictional project used to preview the layout. Replace it with a real project from the admin.",
+    "category": {
+      "slug": "data",
+      "name": "Data Analytics"
+    },
+    "technologies": [
+      {
+        "slug": "python",
+        "name": "Python"
+      },
+      {
+        "slug": "sql",
+        "name": "SQL"
+      }
+    ],
+    "cover": null,
+    "demo_url": "https://example.com/",
+    "repo_url": "https://example.com/repo",
+    "is_featured": false,
+    "is_sample": true,
+    "started_on": "2023-05-01",
+    "ended_on": "2024-06-30",
+    "context": "[TO REPLACE] Where this project came from: client, team, starting constraints.\n[TO REPLACE] An optional second paragraph.",
+    "problem": "[TO REPLACE] The problem to solve, and for whom.",
+    "objectives": "[Objective 1]\n[Objective 2]\n[Objective 3]",
+    "features": "[Feature 1]\n[Feature 2]\n[Feature 3]\n[Feature 4]",
+    "architecture": "[TO REPLACE] Technical layout: frontend, backend, database, hosting, how the parts talk to each other.",
+    "architecture_image": null,
+    "images": [
+      {
+        "image": {
+          "src": "../preview/img/capture-1.webp",
+          "srcset": "../preview/img/capture-1.webp 1600w",
+          "sources": {
+            "webp": {
+              "srcset": "../preview/img/capture-1.webp 1600w",
+              "src": "../preview/img/capture-1.webp"
+            }
+          },
+          "width": 1600,
+          "height": 1000,
+          "alt": "Sample screenshot: main screen"
+        },
+        "caption": "Main screen (sample)"
+      },
+      {
+        "image": {
+          "src": "../preview/img/capture-2.webp",
+          "srcset": "../preview/img/capture-2.webp 1600w",
+          "sources": {
+            "webp": {
+              "srcset": "../preview/img/capture-2.webp 1600w",
+              "src": "../preview/img/capture-2.webp"
+            }
+          },
+          "width": 1600,
+          "height": 1000,
+          "alt": "Sample screenshot: detail view"
+        },
+        "caption": "Detail view (sample)"
+      },
+      {
+        "image": {
+          "src": "../preview/img/capture-3.webp",
+          "srcset": "../preview/img/capture-3.webp 1600w",
+          "sources": {
+            "webp": {
+              "srcset": "../preview/img/capture-3.webp 1600w",
+              "src": "../preview/img/capture-3.webp"
+            }
+          },
+          "width": 1600,
+          "height": 1000,
+          "alt": "Sample screenshot: statistics"
+        },
+        "caption": "Statistics (sample)"
+      }
+    ],
+    "challenges": [
+      {
+        "challenge": "[Challenge faced]",
+        "solution": "[Solution applied]"
+      },
+      {
+        "challenge": "[Another challenge]",
+        "solution": "[Matching solution]"
+      }
+    ],
+    "results": "[TO REPLACE] Results: what changed, measured figures if you have them.",
+    "previous": {
+      "slug": "exemple-interface",
+      "title": "[Sample] Responsive interface"
+    },
+    "next": {
+      "slug": "exemple-pipeline-ci",
+      "title": "[Sample] Continuous integration pipeline"
+    }
+  },
+  "exemple-pipeline-ci": {
+    "slug": "exemple-pipeline-ci",
+    "title": "[Sample] Continuous integration pipeline",
+    "summary": "Fictional project used to preview the layout. Replace it with a real project from the admin.",
+    "category": {
+      "slug": "devops",
+      "name": "DevOps"
+    },
+    "technologies": [
+      {
+        "slug": "docker",
+        "name": "Docker"
+      },
+      {
+        "slug": "github-actions",
+        "name": "GitHub Actions"
+      }
+    ],
+    "cover": null,
+    "demo_url": "https://example.com/",
+    "repo_url": "https://example.com/repo",
+    "is_featured": false,
+    "is_sample": true,
+    "started_on": "2023-02-01",
+    "ended_on": "2024-06-30",
+    "context": "[TO REPLACE] Where this project came from: client, team, starting constraints.\n[TO REPLACE] An optional second paragraph.",
+    "problem": "[TO REPLACE] The problem to solve, and for whom.",
+    "objectives": "[Objective 1]\n[Objective 2]\n[Objective 3]",
+    "features": "[Feature 1]\n[Feature 2]\n[Feature 3]\n[Feature 4]",
+    "architecture": "[TO REPLACE] Technical layout: frontend, backend, database, hosting, how the parts talk to each other.",
+    "architecture_image": null,
+    "images": [
+      {
+        "image": {
+          "src": "../preview/img/capture-1.webp",
+          "srcset": "../preview/img/capture-1.webp 1600w",
+          "sources": {
+            "webp": {
+              "srcset": "../preview/img/capture-1.webp 1600w",
+              "src": "../preview/img/capture-1.webp"
+            }
+          },
+          "width": 1600,
+          "height": 1000,
+          "alt": "Sample screenshot: main screen"
+        },
+        "caption": "Main screen (sample)"
+      },
+      {
+        "image": {
+          "src": "../preview/img/capture-2.webp",
+          "srcset": "../preview/img/capture-2.webp 1600w",
+          "sources": {
+            "webp": {
+              "srcset": "../preview/img/capture-2.webp 1600w",
+              "src": "../preview/img/capture-2.webp"
+            }
+          },
+          "width": 1600,
+          "height": 1000,
+          "alt": "Sample screenshot: detail view"
+        },
+        "caption": "Detail view (sample)"
+      },
+      {
+        "image": {
+          "src": "../preview/img/capture-3.webp",
+          "srcset": "../preview/img/capture-3.webp 1600w",
+          "sources": {
+            "webp": {
+              "srcset": "../preview/img/capture-3.webp 1600w",
+              "src": "../preview/img/capture-3.webp"
+            }
+          },
+          "width": 1600,
+          "height": 1000,
+          "alt": "Sample screenshot: statistics"
+        },
+        "caption": "Statistics (sample)"
+      }
+    ],
+    "challenges": [
+      {
+        "challenge": "[Challenge faced]",
+        "solution": "[Solution applied]"
+      },
+      {
+        "challenge": "[Another challenge]",
+        "solution": "[Matching solution]"
+      }
+    ],
+    "results": "[TO REPLACE] Results: what changed, measured figures if you have them.",
+    "previous": {
+      "slug": "exemple-tableau-de-bord",
+      "title": "[Sample] Data dashboard"
+    },
+    "next": null
+  }
+}

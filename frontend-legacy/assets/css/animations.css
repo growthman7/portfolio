@@ -1,0 +1,25 @@
+@keyframes blink { 0%, 49% { opacity: 1; } 50%, 100% { opacity: 0; } }
+@keyframes rise { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: none; } }
+@keyframes fade { from { opacity: 0; } to { opacity: 1; } }
+@keyframes scroll-cue { 0% { transform: scaleY(0); } 45% { transform: scaleY(1); } 100% { transform: scaleY(1); opacity: 0; } }
+
+/* Transition au chargement de la page et entre pages (FR ↔ EN, page projet) */
+@view-transition { navigation: auto; }
+.js body { animation: fade 500ms var(--ease-out) both; }
+
+/* Séquence d'apparition du hero : pilotée par JavaScript (classe .is-on) après la frappe de l'invite */
+.js [data-enter] { opacity: 0; transform: translateY(18px); }
+.js [data-enter].is-on { opacity: 1; transform: none; transition: opacity var(--dur-slow) var(--ease-out), transform var(--dur-slow) var(--ease-out); }
+.js .word { display: inline-block; opacity: 0; transform: translateY(0.35em); }
+.js .is-on .word { opacity: 1; transform: none; transition: opacity 700ms var(--ease-out), transform 700ms var(--ease-out); }
+
+/* Apparitions au défilement */
+.js [data-reveal] { opacity: 0; transform: translateY(18px); transition: opacity var(--dur-slow) var(--ease-out), transform var(--dur-slow) var(--ease-out); }
+.js [data-reveal].is-visible { opacity: 1; transform: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
+  .js [data-enter], .js .word, .js [data-reveal] { opacity: 1 !important; transform: none !important; }
+  .brand__cursor, .cursor { animation: none; }
+  @view-transition { navigation: none; }
+}

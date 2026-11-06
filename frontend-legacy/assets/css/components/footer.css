@@ -1,0 +1,24 @@
+.site-footer { position: relative; border-top: 1px solid var(--line); padding-block: 5rem 2rem; }
+.site-footer::before { content: ""; position: absolute; top: -1px; left: 0; width: 30%; height: 1px; background: var(--blue); }
+.footer__grid { display: grid; gap: 3rem; }
+.footer__name { font-family: var(--serif); font-size: clamp(3rem, 1.4rem + 7vw, 7rem); line-height: 0.92; letter-spacing: -0.025em; }
+.footer__name em { color: var(--text-muted); }
+.footer__signature { margin-top: 1rem; max-width: 46ch; color: var(--text-muted); }
+.footer__cols { display: grid; gap: 2rem; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.footer__title { margin-bottom: 0.9rem; color: var(--text-faint); }
+.footer__list { display: grid; gap: 6px; }
+.footer__list a { display: inline-flex; min-height: 32px; align-items: center; color: var(--text-muted); transition: color var(--dur-fast); }
+.footer__list a:hover { color: var(--text); }
+.footer__bottom { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px 24px; margin-top: 4rem; padding-top: 1.5rem; border-top: 1px solid #16161a; color: var(--text-faint); font-family: var(--mono); font-size: 0.72rem; }
+.footer__bottom a { text-decoration: underline; text-decoration-color: var(--line-strong); text-underline-offset: 3px; }
+.footer__bottom a:hover { color: var(--text); }
+.footer__legal { display: flex; flex-wrap: wrap; gap: 6px 18px; }
+@media (min-width: 900px) { .footer__grid { grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); align-items: end; } }
+
+/* Pages légales */
+.legal { padding-block: calc(var(--header-h) + 4rem) var(--section-pad); }
+.legal h1 { font-size: var(--fs-h2); margin-bottom: 2rem; }
+.legal h2 { margin: 2.5rem 0 0.75rem; font-family: var(--sans); font-size: 1.1rem; font-weight: 600; letter-spacing: 0; }
+.legal p { max-width: 70ch; color: var(--text-muted); }
+.legal .notice { margin-bottom: 2rem; padding: 14px 16px; border: 1px dashed rgb(255 69 58 / 0.5); border-radius: 10px; color: var(--text); }
+.accent-red { color: var(--red); }

@@ -1,0 +1,13 @@
+.git
+.github
+.env
+.env.*
+!.env.example
+**/node_modules
+frontend/dist
+frontend-legacy
+**/__pycache__
+backend/media
+backend/logs
+backend/staticfiles
+backend/.test-*

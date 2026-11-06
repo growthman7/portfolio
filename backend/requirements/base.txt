@@ -1,0 +1,9 @@
+# Dépendances d'exécution (compatibles Python 3.12/3.13 et Django 5.2 LTS).
+# En production, générez un fichier verrouillé avec empreintes : voir README, section « Dépendances ».
+Django>=5.2.8,<5.3
+djangorestframework>=3.16.1,<3.17
+psycopg[binary]>=3.2.10,<3.3
+argon2-cffi>=25.1.0,<26
+Pillow>=11.3,<13
+django-axes>=8.1,<10
+django-environ>=0.12,<0.13

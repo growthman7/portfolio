@@ -1,0 +1,112 @@
+{
+  "gestion-parc-automobile-firca": {
+    "slug": "gestion-parc-automobile-firca",
+    "title": "Gestion du parc automobile",
+    "summary": "Application web de gestion de flotte réalisée en stage chez FIRCA : demandes de véhicules, attribution des chauffeurs et classement.",
+    "category": {
+      "slug": "full-stack",
+      "name": "Full Stack"
+    },
+    "technologies": [],
+    "cover": null,
+    "demo_url": "",
+    "repo_url": "",
+    "is_featured": true,
+    "is_sample": false,
+    "started_on": "2025-08-01",
+    "ended_on": "2026-01-31",
+    "context": "Projet réalisé pendant mon stage de développeur full stack à la FIRCA (Abidjan), d'août 2025 à janvier 2026.",
+    "problem": "Centraliser la gestion des véhicules de service, des demandes de déplacement et de l'affectation des chauffeurs.",
+    "objectives": "Suivre les véhicules et leurs informations\nTraiter les demandes de véhicules\nAffecter véhicules et chauffeurs",
+    "features": "Module de gestion des demandes de véhicules\nAttribution des véhicules et des chauffeurs\nSystème de classement des chauffeurs\nEnregistrement et gestion des informations des véhicules",
+    "architecture": "",
+    "architecture_image": null,
+    "images": [],
+    "challenges": [],
+    "results": "",
+    "previous": null,
+    "next": {
+      "slug": "deploiement-glpi-comtel",
+      "title": "Déploiement de GLPI"
+    }
+  },
+  "deploiement-glpi-comtel": {
+    "slug": "deploiement-glpi-comtel",
+    "title": "Déploiement de GLPI",
+    "summary": "Installation de GLPI et déploiement d'agents sur les postes chez COMTEL pour l'inventaire du parc et le suivi des incidents.",
+    "category": {
+      "slug": "systemes",
+      "name": "Systèmes"
+    },
+    "technologies": [
+      {
+        "slug": "glpi",
+        "name": "GLPI"
+      }
+    ],
+    "cover": null,
+    "demo_url": "",
+    "repo_url": "",
+    "is_featured": false,
+    "is_sample": false,
+    "started_on": "2024-07-01",
+    "ended_on": "2024-09-30",
+    "context": "Projet réalisé pendant mon stage d'administrateur systèmes chez COMTEL (Abidjan), de juillet à septembre 2024.",
+    "problem": "Disposer d'un inventaire fiable du parc informatique et d'un suivi structuré des incidents et des demandes.",
+    "objectives": "Inventorier le parc informatique\nStructurer le support utilisateurs par tickets",
+    "features": "Installation et configuration de GLPI\nDéploiement d'agents GLPI sur les postes clients\nGestion des tickets d'incidents et de demandes\nInventaire du parc informatique",
+    "architecture": "",
+    "architecture_image": null,
+    "images": [],
+    "challenges": [],
+    "results": "",
+    "previous": {
+      "slug": "gestion-parc-automobile-firca",
+      "title": "Gestion du parc automobile"
+    },
+    "next": {
+      "slug": "analyse-donnees-tableaux-de-bord",
+      "title": "Analyse de données et tableaux de bord"
+    }
+  },
+  "analyse-donnees-tableaux-de-bord": {
+    "slug": "analyse-donnees-tableaux-de-bord",
+    "title": "Analyse de données et tableaux de bord",
+    "summary": "Projet personnel : nettoyage de jeux de données et création de tableaux de bord interactifs.",
+    "category": {
+      "slug": "data",
+      "name": "Data"
+    },
+    "technologies": [
+      {
+        "slug": "excel",
+        "name": "Excel"
+      },
+      {
+        "slug": "power-bi",
+        "name": "Power BI"
+      }
+    ],
+    "cover": null,
+    "demo_url": "",
+    "repo_url": "",
+    "is_featured": false,
+    "is_sample": false,
+    "started_on": "2026-01-01",
+    "ended_on": null,
+    "context": "Projet personnel mené pour approfondir l'analyse de données.",
+    "problem": "",
+    "objectives": "",
+    "features": "Nettoyage de jeux de données\nCréation de tableaux de bord interactifs\nTableaux et graphiques croisés dynamiques",
+    "architecture": "",
+    "architecture_image": null,
+    "images": [],
+    "challenges": [],
+    "results": "",
+    "previous": {
+      "slug": "deploiement-glpi-comtel",
+      "title": "Déploiement de GLPI"
+    },
+    "next": null
+  }
+}

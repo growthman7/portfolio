@@ -1,0 +1,16 @@
+/* Petite fenêtre de terminal : la « voix machine » du site */
+.terminal {
+  display: inline-grid; gap: 6px; max-width: 100%; padding: 14px 18px 16px;
+  border: 1px solid var(--line); border-radius: 12px; background: var(--surface-1);
+  font-family: var(--mono); font-size: 0.875rem; line-height: 1.55;
+}
+.terminal__dots { display: flex; gap: 6px; margin-bottom: 2px; }
+.terminal__dots span { width: 9px; height: 9px; border-radius: 50%; background: var(--line-strong); }
+.terminal__dots span:first-child { background: var(--red); }
+.terminal__line { white-space: pre-wrap; overflow-wrap: anywhere; }
+.terminal__user { color: var(--blue); }
+.terminal__path { color: var(--text-faint); }
+.terminal__out { color: var(--text-muted); }
+.terminal__out::before { content: "→ "; color: var(--blue); }
+.cursor { display: inline-block; width: 8px; height: 1.05em; margin-left: 2px; vertical-align: -0.18em; background: var(--red); animation: blink 1.06s steps(1) infinite; }
+.terminal.is-done .cursor--prompt { display: none; }

@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  <url>
+    <loc>http://localhost:8000/projets/gestion-parc-automobile-firca/</loc>
+    <lastmod>2026-11-05</lastmod>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="fr" href="http://localhost:8000/projets/gestion-parc-automobile-firca/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="http://localhost:8000/en/projects/gestion-parc-automobile-firca/"/>
+  </url>
+  <url>
+    <loc>http://localhost:8000/en/projects/gestion-parc-automobile-firca/</loc>
+    <lastmod>2026-11-05</lastmod>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="fr" href="http://localhost:8000/projets/gestion-parc-automobile-firca/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="http://localhost:8000/en/projects/gestion-parc-automobile-firca/"/>
+  </url>
+  <url>
+    <loc>http://localhost:8000/projets/deploiement-glpi-comtel/</loc>
+    <lastmod>2026-11-05</lastmod>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="fr" href="http://localhost:8000/projets/deploiement-glpi-comtel/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="http://localhost:8000/en/projects/deploiement-glpi-comtel/"/>
+  </url>
+  <url>
+    <loc>http://localhost:8000/en/projects/deploiement-glpi-comtel/</loc>
+    <lastmod>2026-11-05</lastmod>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="fr" href="http://localhost:8000/projets/deploiement-glpi-comtel/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="http://localhost:8000/en/projects/deploiement-glpi-comtel/"/>
+  </url>
+  <url>
+    <loc>http://localhost:8000/projets/analyse-donnees-tableaux-de-bord/</loc>
+    <lastmod>2026-11-05</lastmod>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="fr" href="http://localhost:8000/projets/analyse-donnees-tableaux-de-bord/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="http://localhost:8000/en/projects/analyse-donnees-tableaux-de-bord/"/>
+  </url>
+  <url>
+    <loc>http://localhost:8000/en/projects/analyse-donnees-tableaux-de-bord/</loc>
+    <lastmod>2026-11-05</lastmod>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="fr" href="http://localhost:8000/projets/analyse-donnees-tableaux-de-bord/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="http://localhost:8000/en/projects/analyse-donnees-tableaux-de-bord/"/>
+  </url>
+  <url>
+    <loc>http://localhost:8000/</loc>
+    <lastmod>2026-11-05</lastmod>
+    <priority>1.0</priority>
+    <xhtml:link rel="alternate" hreflang="fr" href="http://localhost:8000/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="http://localhost:8000/en/"/>
+  </url>
+  <url>
+    <loc>http://localhost:8000/en/</loc>
+    <lastmod>2026-11-05</lastmod>
+    <priority>0.9</priority>
+    <xhtml:link rel="alternate" hreflang="fr" href="http://localhost:8000/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="http://localhost:8000/en/"/>
+  </url>
+  <url>
+    <loc>http://localhost:8000/mentions-legales.html</loc>
+    <lastmod>2026-11-05</lastmod>
+    <priority>0.2</priority>
+  </url>
+  <url>
+    <loc>http://localhost:8000/confidentialite.html</loc>
+    <lastmod>2026-11-05</lastmod>
+    <priority>0.2</priority>
+  </url>
+  <url>
+    <loc>http://localhost:8000/en/legal-notice.html</loc>
+    <lastmod>2026-11-05</lastmod>
+    <priority>0.2</priority>
+  </url>
+  <url>
+    <loc>http://localhost:8000/en/privacy.html</loc>
+    <lastmod>2026-11-05</lastmod>
+    <priority>0.2</priority>
+  </url>
+</urlset>

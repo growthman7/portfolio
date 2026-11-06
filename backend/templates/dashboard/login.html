@@ -1,0 +1,27 @@
+{% extends "dashboard/base.html" %}{% load static %}
+{% block title %}Connexion{% endblock %}
+{% block scripts %}<script type="module" src="{% static 'dashboard/js/login.js' %}"></script>{% endblock %}
+{% block body %}
+<main class="auth">
+  <div class="auth__card">
+    <h1 class="auth__title">Connexion</h1>
+    <p class="auth__lead">Espace d'administration du portfolio.</p>
+    <form class="form" data-login-form novalidate>
+      <div class="field">
+        <label for="username">Identifiant</label>
+        <input class="input" id="username" name="username" autocomplete="username" required maxlength="150" autofocus>
+      </div>
+      <div class="field">
+        <label for="password">Mot de passe</label>
+        <input class="input" id="password" name="password" type="password" autocomplete="current-password" required maxlength="256">
+      </div>
+      <p class="alert alert--error" role="alert" data-error hidden></p>
+      <button class="btn btn--primary" type="submit">Se connecter</button>
+    </form>
+    <div class="auth__links">
+      <a href="/">← Retour au site</a>
+      {% if PASSWORD_RESET_ENABLED %}<a href="/{{ DASHBOARD_PREFIX }}/reinitialisation/">Mot de passe oublié ?</a>{% endif %}
+    </div>
+  </div>
+</main>
+{% endblock %}

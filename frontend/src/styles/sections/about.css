@@ -1,0 +1,28 @@
+/* À propos : mise en page éditoriale. Colonne gauche fixe au défilement, texte à droite. */
+.about__grid { display: grid; gap: 3rem; margin-top: 2.25rem; }
+.about__aside { display: grid; gap: 1.5rem; align-content: start; }
+.about__title { font-size: var(--fs-h2); text-wrap: balance; max-width: 14ch; }
+.about__title em { color: var(--text-muted); }
+.about__meta { display: grid; gap: 10px; color: var(--text-faint); }
+.about__meta-row { display: flex; align-items: center; gap: 10px; }
+.about__status-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--text-faint); }
+.about__status--on .about__status-dot { background: var(--blue); box-shadow: 0 0 0 4px var(--blue-soft); }
+.about__status--on { color: var(--text); }
+
+.about__lead { display: grid; gap: 1.1em; font-family: var(--serif); font-size: clamp(1.5rem, 1.1rem + 1.6vw, 2.25rem); line-height: 1.28; letter-spacing: -0.005em; max-width: 30ch; }
+.about__lead p:first-child::first-letter { color: var(--blue); }
+
+.about__facts { margin-top: 3.5rem; display: grid; }
+.about__fact { display: grid; gap: 0.6rem; padding-block: 1.6rem; border-top: 1px solid var(--line); }
+.about__fact:last-child { border-bottom: 1px solid var(--line); }
+.about__key { font-family: var(--mono); font-size: var(--fs-mono); color: var(--text-faint); }
+.about__key span { color: var(--blue); }
+.about__value { display: grid; gap: 0.8em; max-width: 60ch; color: var(--text-muted); }
+.about__value p:first-child { color: var(--text); }
+
+@media (min-width: 960px) {
+  .about__grid { grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.4fr); column-gap: 5rem; }
+  .about__aside { position: sticky; top: calc(var(--header-h) + 2rem); }
+  .about__fact { grid-template-columns: 11rem minmax(0, 1fr); column-gap: 2rem; }
+  .about__key { padding-top: 0.2rem; }
+}

@@ -1,0 +1,5 @@
+-r base.txt
+coverage>=7.6
+ruff>=0.7
+pip-audit>=2.7
+playwright>=1.48  # tests de bout en bout facultatifs (tests/e2e)

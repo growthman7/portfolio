@@ -1,0 +1,41 @@
+# Secrets et configuration locale
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.coverage
+htmlcov/
+.ruff_cache/
+
+# Données générées (jamais dans Git)
+backend/media/
+backend/staticfiles/
+backend/logs/
+backend/.test-media/
+backend/.test-frontend/
+frontend-dist/
+backups/
+*.sql.gz
+*.dump
+
+# Fichiers SEO régénérés depuis la base
+frontend/sitemap.xml
+frontend/robots.txt
+
+# Éditeurs et systèmes
+.DS_Store
+.idea/
+.vscode/
+*.swp
+/build/
+
+# Node / builds
+node_modules/
+frontend/dist/

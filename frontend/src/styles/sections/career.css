@@ -1,0 +1,59 @@
+/* Parcours : timeline verticale filtrable, filet de progression qui se remplit au défilement */
+.career__head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: end; gap: 1.5rem; }
+.career__toolbar { display: flex; flex-wrap: wrap; gap: 8px; margin-block: 2.5rem 3rem; }
+
+.filter {
+  display: inline-flex; align-items: center; gap: 8px; min-height: 40px; padding: 0 14px;
+  border: 1px solid var(--line); border-radius: var(--pill); color: var(--text-muted); font-size: 0.9rem;
+  transition: color var(--dur-fast), border-color var(--dur-fast), background-color var(--dur-fast);
+}
+.filter:hover { color: var(--text); border-color: var(--line-strong); }
+.filter[aria-pressed="true"] { background: var(--text); border-color: var(--text); color: #000; }
+.filter__count { font-family: var(--mono); font-size: 0.7rem; opacity: 0.7; }
+
+ol.timeline { position: relative; display: grid; padding-left: 28px; }
+.timeline__rail { position: absolute; left: 4px; top: 6px; bottom: 6px; width: 1px; background: var(--line); }
+.timeline__fill { position: absolute; inset: 0; background: var(--blue); transform-origin: top; transform: scaleY(0); }
+
+.tl-year { position: relative; padding: 1.75rem 0 0.5rem; font-family: var(--mono); font-size: var(--fs-mono); color: var(--text-faint); }
+.tl-year:first-child { padding-top: 0; }
+
+.tl-item { position: relative; display: grid; gap: 0.6rem; padding: 1.5rem 0 1.75rem; border-bottom: 1px solid #16161a; }
+.tl-item::before {
+  content: ""; position: absolute; left: -28px; top: 2.05rem; width: 9px; height: 9px; border-radius: 50%;
+  background: var(--bg); border: 1px solid var(--text-faint); transition: background-color var(--dur), border-color var(--dur), box-shadow var(--dur);
+}
+.tl-item.is-passed::before { background: var(--blue); border-color: var(--blue); box-shadow: 0 0 0 4px var(--blue-soft); }
+.tl-item__date { font-family: var(--mono); font-size: var(--fs-mono); color: var(--text-faint); }
+.tl-item__kind { font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--blue); }
+.tl-item__title { font-size: clamp(1.6rem, 1.3rem + 1vw, 2.1rem); line-height: 1.1; }
+.tl-item__org { font-weight: 500; }
+.tl-item__org span { font-weight: 400; color: var(--text-muted); }
+.tl-item__text { max-width: 64ch; color: var(--text-muted); }
+.tl-item__badge { justify-self: start; }
+.tl-item__link { justify-self: start; display: inline-flex; align-items: center; gap: 6px; min-height: 36px; color: var(--text); text-decoration: underline; text-decoration-color: var(--blue); text-underline-offset: 4px; }
+
+.tl-toggle { justify-self: start; display: inline-flex; align-items: center; gap: 8px; min-height: 40px; font-family: var(--mono); font-size: var(--fs-mono); color: var(--text-muted); }
+.tl-toggle:hover { color: var(--text); }
+.tl-toggle__sign { color: var(--blue); transition: transform var(--dur) var(--ease-out); }
+.tl-toggle[aria-expanded="true"] .tl-toggle__sign { transform: rotate(45deg); }
+.tl-details { display: grid; grid-template-rows: 0fr; transition: grid-template-rows var(--dur) var(--ease-out); }
+.tl-details.is-open { grid-template-rows: 1fr; }
+.tl-details__inner { overflow: hidden; display: grid; gap: 1rem; }
+.tl-details.is-open .tl-details__inner { padding-top: 0.25rem; }
+.missions { display: grid; gap: 0.5rem; max-width: 64ch; padding: 0; list-style: none; }
+.missions li { position: relative; padding-left: 1.4rem; color: var(--text-muted); }
+.missions li::before { content: "›"; position: absolute; left: 0.2rem; color: var(--blue); font-family: var(--mono); }
+
+.career__empty { margin-top: 1rem; }
+
+@media (min-width: 900px) {
+  ol.timeline { padding-left: 0; }
+  .timeline__rail { left: 200px; }
+  .tl-year { padding-left: 0; }
+  .tl-item { grid-template-columns: 170px minmax(0, 1fr); column-gap: 60px; }
+  .tl-item > :not(.tl-item__date) { grid-column: 2; }
+  .tl-item__date { grid-row: 1 / span 8; padding-top: 0.35rem; }
+  .tl-item::before { left: 196px; }
+}
+.career__downloads { display: flex; flex-wrap: wrap; gap: 0.75rem; }

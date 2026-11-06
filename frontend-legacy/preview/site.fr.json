@@ -1,0 +1,360 @@
+{
+  "lang": "fr",
+  "profile": {
+    "first_name": "Prénom",
+    "last_name": "Nom",
+    "job_title": "[À REMPLACER] Développeur Full Stack",
+    "short_bio": "[À REMPLACER] Courte présentation professionnelle : ce que vous construisez, pour qui, et ce qui distingue votre façon de travailler.",
+    "location": "[Ville, pays]",
+    "expertise": [
+      "[Domaine 1]",
+      "[Domaine 2]",
+      "[Domaine 3]"
+    ],
+    "is_available": true,
+    "email": "prenom.nom@example.com",
+    "photo": null,
+    "cv": null,
+    "social_links": [
+      {
+        "platform": "github",
+        "label": "GitHub",
+        "url": "https://github.com/"
+      },
+      {
+        "platform": "linkedin",
+        "label": "LinkedIn",
+        "url": "https://www.linkedin.com/"
+      }
+    ],
+    "about": "[À REMPLACER] Votre parcours dans l'informatique : comment vous y êtes venu, ce que vous avez appris et construit, et ce qui vous anime aujourd'hui.\n[À REMPLACER] Un second paragraphe facultatif pour préciser votre spécialisation.",
+    "vision": "[À REMPLACER] Votre vision du développement logiciel.",
+    "interests": "[À REMPLACER] Vos centres d'intérêt technologiques.",
+    "approach": "[À REMPLACER] Votre manière d'aborder un problème technique.",
+    "ambitions": "[À REMPLACER] Vos ambitions professionnelles.",
+    "signature": "[À REMPLACER] Signature professionnelle courte."
+  },
+  "skills": [
+    {
+      "kind": "frontend",
+      "slug": "frontend",
+      "name": "Développement Frontend",
+      "skills": [
+        {
+          "name": "HTML & CSS",
+          "level": "advanced",
+          "years": null
+        },
+        {
+          "name": "JavaScript",
+          "level": "intermediate",
+          "years": null
+        },
+        {
+          "name": "React.js",
+          "level": "intermediate",
+          "years": null
+        },
+        {
+          "name": "Bootstrap",
+          "level": "advanced",
+          "years": null
+        }
+      ]
+    },
+    {
+      "kind": "backend",
+      "slug": "backend",
+      "name": "Développement Backend",
+      "skills": [
+        {
+          "name": "PHP",
+          "level": "advanced",
+          "years": null
+        },
+        {
+          "name": "Laravel",
+          "level": "advanced",
+          "years": null
+        },
+        {
+          "name": "Node.js",
+          "level": "intermediate",
+          "years": null
+        }
+      ]
+    },
+    {
+      "kind": "databases",
+      "slug": "databases",
+      "name": "Bases de données",
+      "skills": [
+        {
+          "name": "SQL",
+          "level": "advanced",
+          "years": null
+        },
+        {
+          "name": "MySQL",
+          "level": "advanced",
+          "years": null
+        },
+        {
+          "name": "Merise",
+          "level": "advanced",
+          "years": null
+        },
+        {
+          "name": "UML",
+          "level": "intermediate",
+          "years": null
+        },
+        {
+          "name": "NoSQL",
+          "level": "notions",
+          "years": null
+        }
+      ]
+    },
+    {
+      "kind": "systems",
+      "slug": "systems",
+      "name": "Systèmes et réseaux",
+      "skills": [
+        {
+          "name": "Administration système",
+          "level": "intermediate",
+          "years": null
+        },
+        {
+          "name": "Linux",
+          "level": "intermediate",
+          "years": null
+        },
+        {
+          "name": "GLPI",
+          "level": "advanced",
+          "years": null
+        }
+      ]
+    },
+    {
+      "kind": "devops",
+      "slug": "devops",
+      "name": "DevOps et automatisation",
+      "skills": [
+        {
+          "name": "Intégration continue",
+          "level": "notions",
+          "years": null
+        },
+        {
+          "name": "Déploiement",
+          "level": "notions",
+          "years": null
+        }
+      ]
+    },
+    {
+      "kind": "data",
+      "slug": "data",
+      "name": "Data Analytics",
+      "skills": [
+        {
+          "name": "Excel (TCD, graphiques croisés)",
+          "level": "advanced",
+          "years": null
+        },
+        {
+          "name": "Power BI",
+          "level": "intermediate",
+          "years": null
+        },
+        {
+          "name": "Python",
+          "level": "intermediate",
+          "years": null
+        },
+        {
+          "name": "Statistiques",
+          "level": "intermediate",
+          "years": null
+        },
+        {
+          "name": "Tableau",
+          "level": "notions",
+          "years": null
+        }
+      ]
+    },
+    {
+      "kind": "tools",
+      "slug": "tools",
+      "name": "Outils et environnements",
+      "skills": [
+        {
+          "name": "Word",
+          "level": "advanced",
+          "years": null
+        },
+        {
+          "name": "Excel",
+          "level": "advanced",
+          "years": null
+        }
+      ]
+    }
+  ],
+  "career": {
+    "experiences": [
+      {
+        "kind": "internship",
+        "title": "Stagiaire Développeur Full Stack",
+        "organization": "FIRCA",
+        "location": "Abidjan, Côte d'Ivoire",
+        "start_date": "2025-08-01",
+        "end_date": "2026-01-31",
+        "summary": "Conception et développement d'une application web de gestion du parc automobile.",
+        "missions": [
+          "Participation à la conception et au développement d'une solution de gestion du parc automobile",
+          "Développement d'un module de gestion des demandes de véhicules",
+          "Gestion de l'attribution des véhicules et des chauffeurs",
+          "Mise en place d'un système de classement des chauffeurs",
+          "Enregistrement et gestion des informations relatives aux véhicules",
+          "Participation à la conception de la base de données et manipulation de données"
+        ],
+        "technologies": []
+      },
+      {
+        "kind": "internship",
+        "title": "Stagiaire Administrateur Systèmes",
+        "organization": "COMTEL",
+        "location": "Abidjan, Côte d'Ivoire",
+        "start_date": "2024-07-01",
+        "end_date": "2024-09-30",
+        "summary": "Mise en place d'un outil de gestion du parc informatique et du support utilisateurs.",
+        "missions": [
+          "Installation et configuration de GLPI (Gestionnaire Libre de Parc Informatique)",
+          "Déploiement d'agents GLPI sur les postes clients",
+          "Gestion des tickets d'incidents et de demandes",
+          "Réalisation de l'inventaire du parc informatique"
+        ],
+        "technologies": [
+          "GLPI"
+        ]
+      }
+    ],
+    "educations": [
+      {
+        "degree": "Licence en Génie Informatique",
+        "field": "",
+        "institution": "Institut Universitaire d'Abidjan",
+        "location": "Abidjan",
+        "start_date": "2023-10-10",
+        "end_date": "2026-06-26",
+        "is_degree": true,
+        "description": ""
+      },
+      {
+        "degree": "Baccalauréat série C",
+        "field": "",
+        "institution": "Cours Secondaire Méthodiste de Cocody",
+        "location": "Abidjan",
+        "start_date": "2022-09-01",
+        "end_date": "2023-07-31",
+        "is_degree": true,
+        "description": ""
+      },
+      {
+        "degree": "Master 1 — Mobiquité, Big Data et Cloud",
+        "field": "",
+        "institution": "ESATIC",
+        "location": "Abidjan",
+        "start_date": "2026-10-01",
+        "end_date": null,
+        "is_degree": false,
+        "description": ""
+      }
+    ],
+    "certifications": [],
+    "achievements": []
+  },
+  "categories": [
+    {
+      "slug": "full-stack",
+      "name": "Full Stack"
+    },
+    {
+      "slug": "data",
+      "name": "Data"
+    },
+    {
+      "slug": "systemes",
+      "name": "Systèmes"
+    }
+  ],
+  "projects": [
+    {
+      "slug": "gestion-parc-automobile-firca",
+      "title": "Gestion du parc automobile",
+      "summary": "Application web de gestion de flotte réalisée en stage chez FIRCA : demandes de véhicules, attribution des chauffeurs et classement.",
+      "category": {
+        "slug": "full-stack",
+        "name": "Full Stack"
+      },
+      "technologies": [],
+      "cover": null,
+      "demo_url": "",
+      "repo_url": "",
+      "is_featured": true,
+      "is_sample": false,
+      "started_on": "2025-08-01"
+    },
+    {
+      "slug": "deploiement-glpi-comtel",
+      "title": "Déploiement de GLPI",
+      "summary": "Installation de GLPI et déploiement d'agents sur les postes chez COMTEL pour l'inventaire du parc et le suivi des incidents.",
+      "category": {
+        "slug": "systemes",
+        "name": "Systèmes"
+      },
+      "technologies": [
+        {
+          "slug": "glpi",
+          "name": "GLPI"
+        }
+      ],
+      "cover": null,
+      "demo_url": "",
+      "repo_url": "",
+      "is_featured": false,
+      "is_sample": false,
+      "started_on": "2024-07-01"
+    },
+    {
+      "slug": "analyse-donnees-tableaux-de-bord",
+      "title": "Analyse de données et tableaux de bord",
+      "summary": "Projet personnel : nettoyage de jeux de données et création de tableaux de bord interactifs.",
+      "category": {
+        "slug": "data",
+        "name": "Data"
+      },
+      "technologies": [
+        {
+          "slug": "excel",
+          "name": "Excel"
+        },
+        {
+          "slug": "power-bi",
+          "name": "Power BI"
+        }
+      ],
+      "cover": null,
+      "demo_url": "",
+      "repo_url": "",
+      "is_featured": false,
+      "is_sample": false,
+      "started_on": "2026-01-01"
+    }
+  ]
+}

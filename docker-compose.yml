@@ -1,0 +1,15 @@
+# Développement local : PostgreSQL seul. Django tourne sur votre machine (python manage.py runserver).
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: portfolio_v2
+      POSTGRES_USER: portfolio
+      POSTGRES_PASSWORD: devpass   # valeur de développement uniquement
+    ports:
+      - "127.0.0.1:5432:5432"      # accessible uniquement depuis la machine locale
+    volumes:
+      - pgdata-dev:/var/lib/postgresql/data
+
+volumes:
+  pgdata-dev:

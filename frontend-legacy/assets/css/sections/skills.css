@@ -1,0 +1,32 @@
+/* Compétences : une grille de domaines séparés par des filets fins */
+.skills__head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: end; gap: 1.5rem; margin-bottom: 3rem; }
+.skills__legend { display: flex; flex-wrap: wrap; gap: 10px 20px; color: var(--text-faint); }
+.skills__legend-item { display: inline-flex; align-items: center; gap: 8px; }
+
+.skills__grid { display: grid; gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: var(--radius-m); overflow: hidden; }
+@media (min-width: 640px) { .skills__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (min-width: 1024px) { .skills__grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+
+.skill-panel__inner { display: grid; gap: 1.25rem; align-content: start; }
+.skill-panel { padding: 1.75rem 1.5rem 2rem; background: var(--bg); transition: background-color var(--dur) var(--ease-out); }
+.skill-panel:hover { background: var(--surface-1); }
+.skill-panel__head { display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; }
+.skill-panel__name { font-size: 1.65rem; line-height: 1.1; }
+.skill-panel__code { color: var(--text-faint); transition: color var(--dur-fast); }
+.skill-panel:hover .skill-panel__code { color: var(--blue); }
+
+.skill-list { display: grid; gap: 2px; }
+.skill { display: flex; justify-content: space-between; align-items: center; gap: 1rem; min-height: 36px; padding: 6px 0; border-bottom: 1px solid #16161a; }
+.skill:last-child { border-bottom: 0; }
+.skill__name { min-width: 0; overflow-wrap: anywhere; }
+
+/* Niveau : quatre paliers dessinés comme des segments, avec le libellé pour les lecteurs d'écran */
+.level { display: inline-flex; align-items: center; gap: 10px; flex-shrink: 0; }
+.level__bars { display: inline-flex; gap: 3px; }
+.level__bars i { width: 14px; height: 4px; border-radius: 2px; background: var(--line-strong); }
+.level__bars i.on { background: var(--blue); }
+.level__label { min-width: 9ch; text-align: right; color: var(--text-faint); font-size: 0.72rem; }
+.skill-panel:hover .level__bars i.on { background: #5b98f8; }
+
+/* Sur petit écran, le libellé reste lu par les lecteurs d'écran mais n'est plus affiché. */
+@media (max-width: 420px) { .level__label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; } }

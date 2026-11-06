@@ -1,0 +1,48 @@
+/* Design tokens — « Console éditoriale » */
+@font-face { font-family: "Instrument Serif"; src: url("/assets/fonts/instrument-serif-regular.woff2") format("woff2"); font-weight: 400; font-style: normal; font-display: swap; }
+@font-face { font-family: "Instrument Serif"; src: url("/assets/fonts/instrument-serif-italic.woff2") format("woff2"); font-weight: 400; font-style: italic; font-display: swap; }
+@font-face { font-family: "Geist"; src: url("/assets/fonts/geist-variable.woff2") format("woff2"); font-weight: 100 900; font-display: swap; }
+@font-face { font-family: "Geist Mono"; src: url("/assets/fonts/geist-mono-regular.woff2") format("woff2"); font-weight: 400; font-display: swap; }
+
+:root {
+  color-scheme: dark;
+  /* Couleurs : le noir domine, bleu = interactif, rouge = accent rare */
+  --bg: #000000;
+  --surface-1: #0a0a0b;
+  --surface-2: #121214;
+  --surface-3: #1a1a1e;
+  --line: #232327;
+  --line-strong: #3a3a40;
+  --text: #f4f4f2;
+  --text-muted: #a1a1aa;
+  --text-faint: #8a8a94;
+  --blue: #3b82f6;
+  --blue-soft: rgb(59 130 246 / 0.14);
+  --red: #ff453a;
+
+  /* Typographie */
+  --serif: "Instrument Serif", "Iowan Old Style", Georgia, serif;
+  --sans: "Geist", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono: "Geist Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+  --fs-mono: 0.8125rem;
+  --fs-body: clamp(1rem, 0.96rem + 0.2vw, 1.0625rem);
+  --fs-lead: clamp(1.0625rem, 1rem + 0.35vw, 1.2rem);
+  --fs-h2: clamp(2.5rem, 1.7rem + 3.4vw, 4.25rem);
+  --fs-display: clamp(3.6rem, 1.4rem + 9.6vw, 9.25rem);
+
+  /* Espacements et formes */
+  --gutter: clamp(1.25rem, 0.8rem + 2.2vw, 3rem);
+  --max: 1200px;
+  --header-h: 64px;
+  --section-pad: clamp(5rem, 3.5rem + 6vw, 8rem);
+  --radius-s: 8px;
+  --radius-m: 14px;
+  --radius-l: 24px;
+  --pill: 999px;
+
+  /* Mouvement */
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --dur-fast: 180ms;
+  --dur: 420ms;
+  --dur-slow: 900ms;
+}

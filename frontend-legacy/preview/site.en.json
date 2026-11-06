@@ -1,0 +1,394 @@
+{
+  "lang": "en",
+  "profile": {
+    "first_name": "First name",
+    "last_name": "Last name",
+    "job_title": "[TO REPLACE] Full Stack Developer",
+    "short_bio": "[TO REPLACE] Short professional introduction: what you build, for whom, and what sets your way of working apart.",
+    "location": "[City, country]",
+    "expertise": [
+      "[Area 1]",
+      "[Area 2]",
+      "[Area 3]"
+    ],
+    "is_available": true,
+    "email": "first.last@example.com",
+    "photo": null,
+    "cv": null,
+    "social_links": [
+      {
+        "platform": "github",
+        "label": "GitHub",
+        "url": "https://github.com/"
+      },
+      {
+        "platform": "linkedin",
+        "label": "LinkedIn",
+        "url": "https://www.linkedin.com/"
+      }
+    ],
+    "about": "[TO REPLACE] Your path into software: how you got started, what you learned and built, and what drives you today.\n[TO REPLACE] An optional second paragraph about your specialisation.",
+    "vision": "[TO REPLACE] Your vision of software development.",
+    "interests": "[TO REPLACE] Your technology interests.",
+    "approach": "[TO REPLACE] How you approach a technical problem.",
+    "ambitions": "[TO REPLACE] Your professional ambitions.",
+    "signature": "[TO REPLACE] Short professional signature."
+  },
+  "skills": [
+    {
+      "kind": "frontend",
+      "name": "Frontend development",
+      "skills": [
+        {
+          "name": "[Skill] 1",
+          "level": "advanced"
+        },
+        {
+          "name": "[Skill] 2",
+          "level": "intermediate"
+        },
+        {
+          "name": "[Skill] 3",
+          "level": ""
+        }
+      ]
+    },
+    {
+      "kind": "backend",
+      "name": "Backend development",
+      "skills": [
+        {
+          "name": "[Skill] 1",
+          "level": "expert"
+        },
+        {
+          "name": "[Skill] 2",
+          "level": ""
+        }
+      ]
+    },
+    {
+      "kind": "fullstack",
+      "name": "Full Stack development",
+      "skills": [
+        {
+          "name": "[Skill] 1",
+          "level": "intermediate"
+        }
+      ]
+    },
+    {
+      "kind": "databases",
+      "name": "Databases",
+      "skills": [
+        {
+          "name": "[Skill] 1",
+          "level": "advanced"
+        },
+        {
+          "name": "[Skill] 2",
+          "level": "notions"
+        }
+      ]
+    },
+    {
+      "kind": "systems",
+      "name": "Systems & networks",
+      "skills": [
+        {
+          "name": "[Skill] 1",
+          "level": "notions"
+        },
+        {
+          "name": "[Skill] 2",
+          "level": ""
+        }
+      ]
+    },
+    {
+      "kind": "devops",
+      "name": "DevOps & automation",
+      "skills": [
+        {
+          "name": "[Skill] 1",
+          "level": "intermediate"
+        },
+        {
+          "name": "[Skill] 2",
+          "level": "notions"
+        }
+      ]
+    },
+    {
+      "kind": "data",
+      "name": "Data Analytics",
+      "skills": [
+        {
+          "name": "[Skill] 1",
+          "level": ""
+        },
+        {
+          "name": "[Skill] 2",
+          "level": "notions"
+        }
+      ]
+    },
+    {
+      "kind": "security",
+      "name": "Cybersecurity",
+      "skills": [
+        {
+          "name": "[Skill] 1",
+          "level": "intermediate"
+        }
+      ]
+    },
+    {
+      "kind": "tools",
+      "name": "Tools & environments",
+      "skills": [
+        {
+          "name": "[Skill] 1",
+          "level": "expert"
+        },
+        {
+          "name": "[Skill] 2",
+          "level": "advanced"
+        },
+        {
+          "name": "[Skill] 3",
+          "level": ""
+        }
+      ]
+    }
+  ],
+  "career": {
+    "experiences": [
+      {
+        "kind": "job",
+        "title": "[SAMPLE] Job title",
+        "organization": "[Company]",
+        "location": "[City]",
+        "start_date": "2024-01-01",
+        "end_date": null,
+        "summary": "[TO REPLACE] Summary of the role and its context.",
+        "missions": [
+          "[Main assignment 1]",
+          "[Main assignment 2]"
+        ],
+        "technologies": [
+          "[Technology]",
+          "[Tool]"
+        ]
+      },
+      {
+        "kind": "internship",
+        "title": "[SAMPLE] Development internship",
+        "organization": "[Company]",
+        "location": "[City]",
+        "start_date": "2023-02-01",
+        "end_date": "2023-07-31",
+        "summary": "[TO REPLACE] Internship context.",
+        "missions": [
+          "[Completed assignment]"
+        ],
+        "technologies": [
+          "[Technology]"
+        ]
+      }
+    ],
+    "educations": [
+      {
+        "degree": "[SAMPLE] Degree or programme",
+        "field": "[Field]",
+        "institution": "[Institution]",
+        "start_date": "2020-09-01",
+        "end_date": "2023-06-30",
+        "is_degree": true,
+        "description": ""
+      }
+    ],
+    "certifications": [
+      {
+        "name": "[SAMPLE] Certification",
+        "issuer": "[Issuer]",
+        "issued_on": "2024-06-01",
+        "expires_on": null,
+        "credential_url": ""
+      }
+    ],
+    "achievements": [
+      {
+        "title": "[SAMPLE] Notable achievement",
+        "date": "2024-11-01",
+        "description": "[TO REPLACE] Award, publication, open-source contribution…",
+        "url": ""
+      }
+    ]
+  },
+  "categories": [
+    {
+      "slug": "full-stack",
+      "name": "Full Stack"
+    },
+    {
+      "slug": "frontend",
+      "name": "Frontend"
+    },
+    {
+      "slug": "backend",
+      "name": "Backend"
+    },
+    {
+      "slug": "data",
+      "name": "Data Analytics"
+    },
+    {
+      "slug": "devops",
+      "name": "DevOps"
+    }
+  ],
+  "projects": [
+    {
+      "slug": "exemple-application-web",
+      "title": "[Sample] Web application",
+      "summary": "Fictional project used to preview the layout. Replace it with a real project from the admin.",
+      "category": {
+        "slug": "full-stack",
+        "name": "Full Stack"
+      },
+      "technologies": [
+        {
+          "slug": "django",
+          "name": "Django"
+        },
+        {
+          "slug": "postgresql",
+          "name": "PostgreSQL"
+        },
+        {
+          "slug": "javascript",
+          "name": "JavaScript"
+        },
+        {
+          "slug": "docker",
+          "name": "Docker"
+        }
+      ],
+      "cover": null,
+      "demo_url": "https://example.com/",
+      "repo_url": "https://example.com/repo",
+      "is_featured": true,
+      "is_sample": true,
+      "started_on": "2024-03-01"
+    },
+    {
+      "slug": "exemple-api-rest",
+      "title": "[Sample] REST API",
+      "summary": "Fictional project used to preview the layout. Replace it with a real project from the admin.",
+      "category": {
+        "slug": "backend",
+        "name": "Backend"
+      },
+      "technologies": [
+        {
+          "slug": "python",
+          "name": "Python"
+        },
+        {
+          "slug": "django",
+          "name": "Django"
+        },
+        {
+          "slug": "postgresql",
+          "name": "PostgreSQL"
+        }
+      ],
+      "cover": null,
+      "demo_url": "https://example.com/",
+      "repo_url": "https://example.com/repo",
+      "is_featured": false,
+      "is_sample": true,
+      "started_on": "2024-01-01"
+    },
+    {
+      "slug": "exemple-interface",
+      "title": "[Sample] Responsive interface",
+      "summary": "Fictional project used to preview the layout. Replace it with a real project from the admin.",
+      "category": {
+        "slug": "frontend",
+        "name": "Frontend"
+      },
+      "technologies": [
+        {
+          "slug": "html",
+          "name": "HTML"
+        },
+        {
+          "slug": "css",
+          "name": "CSS"
+        },
+        {
+          "slug": "javascript",
+          "name": "JavaScript"
+        }
+      ],
+      "cover": null,
+      "demo_url": "https://example.com/",
+      "repo_url": "https://example.com/repo",
+      "is_featured": false,
+      "is_sample": true,
+      "started_on": "2023-09-01"
+    },
+    {
+      "slug": "exemple-tableau-de-bord",
+      "title": "[Sample] Data dashboard",
+      "summary": "Fictional project used to preview the layout. Replace it with a real project from the admin.",
+      "category": {
+        "slug": "data",
+        "name": "Data Analytics"
+      },
+      "technologies": [
+        {
+          "slug": "python",
+          "name": "Python"
+        },
+        {
+          "slug": "sql",
+          "name": "SQL"
+        }
+      ],
+      "cover": null,
+      "demo_url": "https://example.com/",
+      "repo_url": "https://example.com/repo",
+      "is_featured": false,
+      "is_sample": true,
+      "started_on": "2023-05-01"
+    },
+    {
+      "slug": "exemple-pipeline-ci",
+      "title": "[Sample] Continuous integration pipeline",
+      "summary": "Fictional project used to preview the layout. Replace it with a real project from the admin.",
+      "category": {
+        "slug": "devops",
+        "name": "DevOps"
+      },
+      "technologies": [
+        {
+          "slug": "docker",
+          "name": "Docker"
+        },
+        {
+          "slug": "github-actions",
+          "name": "GitHub Actions"
+        }
+      ],
+      "cover": null,
+      "demo_url": "https://example.com/",
+      "repo_url": "https://example.com/repo",
+      "is_featured": false,
+      "is_sample": true,
+      "started_on": "2023-02-01"
+    }
+  ]
+}

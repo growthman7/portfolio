@@ -1,0 +1,30 @@
+/* Arrière-plan : un halo bleu très diffus et un grain discret */
+.backdrop { position: fixed; inset: 0; z-index: -1; overflow: hidden; pointer-events: none; }
+.backdrop__halo {
+  position: absolute; top: -45vmax; left: -30vmax; width: 85vmax; aspect-ratio: 1; border-radius: 50%;
+  background: radial-gradient(circle, rgb(59 130 246 / 0.13), transparent 62%);
+  will-change: transform;
+}
+.backdrop__grain {
+  position: absolute; inset: -50%; opacity: 0.045; mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+.skip-link {
+  position: fixed; top: 12px; left: 12px; z-index: 100; padding: 8px 16px; border-radius: var(--pill);
+  background: var(--text); color: #000; translate: 0 -200%; transition: translate var(--dur-fast) var(--ease-out);
+}
+.skip-link:focus { translate: 0 0; }
+
+/* Sections */
+.section { position: relative; padding-block: var(--section-pad); border-top: 1px solid var(--line); }
+.section__label { display: flex; align-items: center; gap: 10px; color: var(--text-faint); }
+.section__label::before { content: "//"; color: var(--blue); }
+.section__title { margin-top: 1.75rem; font-size: var(--fs-h2); max-width: 16ch; }
+.section__title em { color: var(--text-muted); }
+
+/* Emplacement d'une section développée aux étapes suivantes (aperçu progressif) */
+.section--pending .pending {
+  margin-top: 2.5rem; padding: 2rem; border: 1px dashed var(--line-strong); border-radius: var(--radius-m);
+  color: var(--text-faint);
+}
