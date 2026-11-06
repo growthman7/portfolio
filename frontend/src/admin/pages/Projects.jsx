@@ -49,7 +49,16 @@ const schema = (options) => [
   {
     title: "Technique & liens",
     fields: [
-      { name: "technologies", label: "Technologies", type: "multiselect", options: options.technologies, help: "Ctrl/Cmd + clic pour une sélection multiple." },
+      {
+        name: "technologies", label: "Technologies", type: "tags", options: options.technologies,
+        help: "Cochez les technologies du projet ou ajoutez-en une nouvelle. Pensez à enregistrer le projet.",
+        emptyText: "Aucune technologie sélectionnée.",
+        createPlaceholder: "Nouvelle technologie (ex. Django)", createLabel: "+ Ajouter", createMax: 60,
+        onCreate: async (name) => {
+          const technology = await api.post("/admin/technologies/", { name });
+          return { value: technology.id, label: technology.name };
+        },
+      },
       { name: "demo_url", label: "Démonstration en ligne", type: "url", placeholder: "https://…", max: 300 },
       { name: "repo_url", label: "Dépôt GitHub", type: "url", placeholder: "https://github.com/…", max: 300 },
       { name: "started_on", label: "Début", type: "date" },

@@ -32,7 +32,7 @@ let rowKey = 0;
 /** Valeur de l'API → valeur d'édition. */
 function toDraft(field, value) {
   if (field.type === "checkbox") return Boolean(value);
-  if (field.type === "multiselect") return (value || []).map(String);
+  if (field.type === "multiselect" || field.type === "tags") return (value || []).map(String);
   if (field.type === "list") return (value || []).join("\n");
   if (isRepeater(field)) return (value || []).map((item) => ({ ...item, _key: ++rowKey }));
   // Liste obligatoire sans valeur : première option présélectionnée, comme un <select> natif.
@@ -51,6 +51,8 @@ function fromDraft(field, value) {
       return value || null;
     case "multiselect":
       return value.map((v) => (field.numeric === false ? v : Number(v)));
+    case "tags":
+      return value.map(Number);
     case "select":
       if (value === "") return field.allowEmpty ? (field.numeric ? null : "") : null;
       return field.numeric ? Number(value) : value;
@@ -95,6 +97,75 @@ function Repeater({ id, field, value, onChange }) {
   );
 }
 
+/**
+ * Sélection de plusieurs éléments par cases à cocher, avec pastilles et création à la volée.
+ * field.onCreate(name) → { value, label } : crée l'élément côté API (facultatif).
+ */
+function TagPicker({ id, field, value, onChange, errorId }) {
+  const [options, setOptions] = useState(field.options || []);
+  const [name, setName] = useState("");
+  const [status, setStatus] = useState({ busy: false, error: "" });
+  const selected = new Set(value);
+  const labelOf = (v) => options.find((o) => String(o.value) === v)?.label || v;
+  const toggle = (v) => onChange(selected.has(v) ? value.filter((x) => x !== v) : [...value, v]);
+
+  const create = async () => {
+    const text = name.trim();
+    if (!text) return;
+    const existing = options.find((o) => o.label.toLowerCase() === text.toLowerCase());
+    if (existing) {
+      if (!selected.has(String(existing.value))) onChange([...value, String(existing.value)]);
+      setName("");
+      return;
+    }
+    setStatus({ busy: true, error: "" });
+    try {
+      const option = await field.onCreate(text);
+      setOptions((list) => [...list, option].sort((a, b) => a.label.localeCompare(b.label, "fr")));
+      onChange([...value, String(option.value)]);
+      setName("");
+      setStatus({ busy: false, error: "" });
+    } catch (error) {
+      setStatus({ busy: false, error: errorMessage(error) });
+    }
+  };
+
+  return (
+    <div className="tags" id={id} aria-describedby={errorId}>
+      <div className="tags__selected" aria-live="polite">
+        {value.length ? value.map((v) => (
+          <span key={v} className="tag">
+            {labelOf(v)}
+            <button type="button" className="tag__remove" onClick={() => toggle(v)} aria-label={`Retirer ${labelOf(v)}`}>×</button>
+          </span>
+        )) : <span className="field__help">{field.emptyText || "Aucun élément sélectionné."}</span>}
+      </div>
+      {options.length ? (
+        <fieldset className="tags__options">
+          <legend className="visually-hidden">{field.label}</legend>
+          {options.map((o) => (
+            <label key={o.value} className="tags__option">
+              <input type="checkbox" checked={selected.has(String(o.value))} onChange={() => toggle(String(o.value))} />
+              <span>{o.label}</span>
+            </label>
+          ))}
+        </fieldset>
+      ) : null}
+      {field.onCreate ? (
+        <div className="tags__create">
+          <input className="input" value={name} maxLength={field.createMax || 60} placeholder={field.createPlaceholder || "Nouvel élément"}
+            aria-label={field.createPlaceholder || "Nouvel élément"} onChange={(e) => setName(e.target.value)}
+            onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); create(); } }} />
+          <button className="btn btn--small" type="button" onClick={create} disabled={status.busy || !name.trim()}>
+            {status.busy ? "Ajout…" : field.createLabel || "+ Ajouter"}
+          </button>
+        </div>
+      ) : null}
+      {status.error ? <p className="field__error">{status.error}</p> : null}
+    </div>
+  );
+}
+
 function Control({ id, field, value, onChange, invalid, errorId }) {
   const common = {
     id, name: field.name, className: "input", required: field.required || undefined,
@@ -124,6 +195,8 @@ function Control({ id, field, value, onChange, invalid, errorId }) {
     case "repeater":
     case "missions":
       return <Repeater id={id} field={field} value={value} onChange={onChange} />;
+    case "tags":
+      return <TagPicker id={id} field={field} value={value} onChange={onChange} errorId={errorId} />;
     default:
       return (
         <input {...common} type={field.type || "text"} maxLength={field.max} min={field.min} max={field.type === "number" ? field.maxValue : undefined}
@@ -132,7 +205,7 @@ function Control({ id, field, value, onChange, invalid, errorId }) {
   }
 }
 
-const WIDE_TYPES = ["textarea", "list", "missions", "repeater", "multiselect"];
+const WIDE_TYPES = ["textarea", "list", "missions", "repeater", "multiselect", "tags"];
 
 /**
  * @param sections   [{ title?, help?, fields: [...] }]
