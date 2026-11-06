@@ -63,7 +63,9 @@ jobs:
           cache-dependency-path: backend/requirements/*.txt
       - run: pip install -r requirements/dev.txt
       - name: Analyse statique
-        run: ruff check .
+        run: |
+          ruff --version
+          ruff check . --output-format github
       - name: Audit des dépendances (vulnérabilités connues)
         run: pip-audit -r requirements/base.txt
       - name: Migrations à jour
