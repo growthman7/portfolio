@@ -10,7 +10,8 @@ import logging
 import uuid
 
 from django.conf import settings
-from django.core.exceptions import PermissionDenied, ValidationError as DjangoValidationError
+from django.core.exceptions import PermissionDenied
+from django.core.exceptions import ValidationError as DjangoValidationError
 from django.db import DatabaseError
 from django.http import Http404
 from rest_framework import status

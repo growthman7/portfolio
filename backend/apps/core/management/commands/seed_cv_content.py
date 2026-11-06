@@ -22,9 +22,6 @@ from django.core.management.base import BaseCommand, CommandError
 from django.db import transaction
 from django.utils.text import slugify
 
-from apps.core.models import SiteProfile, SocialLink
-from apps.core.services.uploads import delete_asset, store_pdf
-
 from apps.career.models import (
     Achievement,
     Certification,
@@ -32,6 +29,8 @@ from apps.career.models import (
     Experience,
     Mission,
 )
+from apps.core.models import SiteProfile, SocialLink
+from apps.core.services.uploads import delete_asset, store_pdf
 from apps.projects.models import Category, Project, Technology
 from apps.skills.models import Skill, SkillCategory
 

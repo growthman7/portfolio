@@ -137,7 +137,7 @@ class AdminProfileSerializer(serializers.ModelSerializer):
         return _validate_expertise(value)
 
     def validate(self, attrs):
-        for key, value in attrs.items():
+        for value in attrs.values():
             if isinstance(value, str):
                 validate_no_control_chars(value)
         return attrs

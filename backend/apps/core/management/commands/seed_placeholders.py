@@ -19,7 +19,13 @@ from django.core.management.base import BaseCommand
 from django.db import transaction
 from PIL import Image, ImageDraw, ImageFilter, ImageFont
 
-from apps.career.models import Achievement, Certification, Education, Experience, Mission
+from apps.career.models import (
+    Achievement,
+    Certification,
+    Education,
+    Experience,
+    Mission,
+)
 from apps.core.models import SiteProfile, SocialLink
 from apps.core.services.uploads import store_image
 from apps.projects.models import Category, Project, ProjectChallenge, Technology

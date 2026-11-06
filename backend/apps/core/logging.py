@@ -12,7 +12,7 @@ class RedactSecretsFilter(logging.Filter):
     def filter(self, record: logging.LogRecord) -> bool:
         try:
             message = record.getMessage()
-        except Exception:  # pragma: no cover
+        except Exception:  # noqa: BLE001 — un filtre de journalisation ne doit jamais lever  # pragma: no cover
             return True
         redacted = _SECRET_PATTERN.sub(r"\1\2[MASQUÉ]", message)
         if redacted != message:

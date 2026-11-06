@@ -14,16 +14,23 @@ from rest_framework.viewsets import ViewSet
 from apps.audit.models import AuditLog
 from apps.audit.services import record
 from apps.career.views import career_payload
-from apps.projects.serializers import PublicCategorySerializer, PublicProjectCardSerializer
-from apps.projects.views import published_projects
 from apps.projects.models import Category
+from apps.projects.serializers import (
+    PublicCategorySerializer,
+    PublicProjectCardSerializer,
+)
+from apps.projects.views import published_projects
 from apps.skills.models import Skill, SkillCategory
 from apps.skills.serializers import PublicSkillCategorySerializer
 
 from .i18n import get_request_language
 from .models import SiteProfile, SocialLink
 from .permissions import ADMIN_PERMISSION_CLASSES
-from .serializers import AdminProfileSerializer, AdminSocialLinkSerializer, PublicProfileSerializer
+from .serializers import (
+    AdminProfileSerializer,
+    AdminSocialLinkSerializer,
+    PublicProfileSerializer,
+)
 from .services.uploads import delete_asset, ensure_valid, store_image, store_pdf
 from .throttling import ScopedIpThrottle, UploadThrottle, UserBurstThrottle
 from .viewsets import AdminModelViewSet
@@ -39,7 +46,7 @@ def healthz(request):
     try:
         with connection.cursor() as cursor:
             cursor.execute("SELECT 1")
-    except Exception:
+    except Exception:  # noqa: BLE001 — toute erreur de base rend la sonde indisponible
         return JsonResponse({"status": "error"}, status=503)
     return JsonResponse({"status": "ok"})
 

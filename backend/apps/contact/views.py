@@ -9,7 +9,11 @@ from apps.audit.models import AuditLog
 from apps.audit.services import record
 from apps.core.net import request_ip_hash
 from apps.core.permissions import ADMIN_PERMISSION_CLASSES
-from apps.core.throttling import ContactDailyThrottle, ContactHourlyThrottle, ScopedIpThrottle
+from apps.core.throttling import (
+    ContactDailyThrottle,
+    ContactHourlyThrottle,
+    ScopedIpThrottle,
+)
 from apps.core.viewsets import EnforceCSRFMixin
 
 from .models import ContactMessage

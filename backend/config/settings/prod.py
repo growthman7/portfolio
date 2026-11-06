@@ -1,7 +1,7 @@
 """Paramètres de production. Toute erreur de configuration doit empêcher le démarrage."""
 from django.core.exceptions import ImproperlyConfigured
 
-from .base import *  # noqa: F401,F403
+from .base import *
 from .base import LOG_DIR, LOGGING, SECRET_KEY, env
 
 DEBUG = False

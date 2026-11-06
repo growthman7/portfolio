@@ -1,6 +1,11 @@
 from rest_framework.routers import SimpleRouter
 
-from .views import AdminAchievementViewSet, AdminCertificationViewSet, AdminEducationViewSet, AdminExperienceViewSet
+from .views import (
+    AdminAchievementViewSet,
+    AdminCertificationViewSet,
+    AdminEducationViewSet,
+    AdminExperienceViewSet,
+)
 
 router = SimpleRouter()
 router.register("experiences", AdminExperienceViewSet, basename="admin-experience")

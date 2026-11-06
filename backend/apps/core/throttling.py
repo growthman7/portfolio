@@ -1,5 +1,10 @@
 """Limitation du nombre de requêtes (rate limiting) basée sur l'IP fiable."""
-from rest_framework.throttling import AnonRateThrottle, ScopedRateThrottle, SimpleRateThrottle, UserRateThrottle
+from rest_framework.throttling import (
+    AnonRateThrottle,
+    ScopedRateThrottle,
+    SimpleRateThrottle,
+    UserRateThrottle,
+)
 
 from .net import get_client_ip
 

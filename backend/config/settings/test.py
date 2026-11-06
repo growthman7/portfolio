@@ -1,5 +1,5 @@
 """Paramètres des tests automatisés (PostgreSQL réel, comme en production)."""
-from .base import *  # noqa: F401,F403
+from .base import *
 from .base import BASE_DIR
 
 DEBUG = False

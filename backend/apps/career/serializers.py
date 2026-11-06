@@ -4,7 +4,6 @@ from rest_framework import serializers
 from apps.core.i18n import TranslatedField, bilingual
 from apps.core.validators.text import validate_no_control_chars
 from apps.projects.models import Technology
-from apps.projects.serializers import PublicTechnologySerializer
 
 from .models import Achievement, Certification, Education, Experience, Mission
 

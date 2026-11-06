@@ -131,7 +131,7 @@ class SiteProfile(TimeStampedModel):
         return f"{self.first_name} {self.last_name}".strip()
 
     @classmethod
-    def load(cls) -> "SiteProfile":
+    def load(cls) -> SiteProfile:
         profile = cls.objects.select_related("photo", "cv_fr", "cv_en", "og_image").filter(singleton=1).first()
         if profile is None:
             profile = cls.objects.create(

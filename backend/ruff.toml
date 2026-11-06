@@ -1,0 +1,7 @@
+# Configuration ruff du backend (versionnée pour que local et CI appliquent les mêmes règles).
+target-version = "py312"
+extend-exclude = ["media", "static"]
+
+[lint]
+# RUF012 : faux positifs systématiques avec Django/DRF (Meta.indexes, migrations, permission_classes…).
+ignore = ["RUF012"]
