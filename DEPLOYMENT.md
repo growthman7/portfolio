@@ -32,7 +32,7 @@ Ne les versionnez jamais ; conservez-les dans un gestionnaire de mots de passe.
 
    | Variable | Valeur |
    |---|---|
-   | `DJANGO_SECRET_KEY`, `IP_HASH_SALT`, `PROXY_SHARED_SECRET` | Étape 1 |
+   | `DJANGO_SECRET_KEY` | Étape 1 (50 caractères minimum) |
    | `SITE_URL` | `https://<projet>.vercel.app` (ou votre domaine) |
    | `DJANGO_ALLOWED_HOSTS` | `<projet>.vercel.app` (l'hôte `*.onrender.com` est ajouté automatiquement) |
    | `DJANGO_CSRF_TRUSTED_ORIGINS` | `https://<projet>.vercel.app` |
@@ -44,9 +44,12 @@ Ne les versionnez jamais ; conservez-les dans un gestionnaire de mots de passe.
 4. Compte administrateur : *Shell* du service, puis
    `python manage.py create_portfolio_admin --username <identifiant> --email <e-mail>`.
 
-Offres : le disque persistant exige une offre web payante (`starter`) et la base gratuite de Render expire
-après 30 jours (`basic-256mb` dans le Blueprint). Une seule base est fournie : migrations et application
-utilisent le même rôle PostgreSQL (la séparation propriétaire/applicatif de l'option B n'est pas reproduite).
+Offres : le Blueprint utilise les offres gratuites (`plan: free`). Limites : le service se met en veille après
+15 min d'inactivité, les fichiers téléversés (photo, CV, images) sont perdus à chaque redéploiement ou
+redémarrage (pas de disque persistant) et la base gratuite expire après 30 jours. Pour la production, passez à
+`starter` + disque `/srv/media` et `basic-256mb` (voir les commentaires de `render.yaml`). `IP_HASH_SALT` et
+`PROXY_SHARED_SECRET` sont générés par Render (`generateValue`) : recopiez le second dans Vercel. Une seule
+base est fournie : migrations et application utilisent le même rôle PostgreSQL.
 
 ### 3. Vercel (frontend)
 

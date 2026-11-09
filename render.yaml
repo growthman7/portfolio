@@ -9,7 +9,7 @@ databases:
   - name: portfolio-db
     databaseName: portfolio_v2
     user: portfolio_owner
-    plan: basic-256mb          # l'offre gratuite expire au bout de 30 jours : inadaptée à la production
+    plan: free                 # gratuit : la base expire au bout de 30 jours (basic-256mb pour la production)
     region: frankfurt
     postgresMajorVersion: "16"
     ipAllowList: []            # aucune connexion depuis Internet
@@ -20,15 +20,12 @@ services:
     runtime: docker
     dockerfilePath: ./deploy/docker/Dockerfile
     dockerContext: .
-    plan: starter              # un disque persistant (médias) exige une offre payante
+    plan: free                 # gratuit : mise en veille après 15 min, médias non persistants (pas de disque).
+                               # Production : plan starter + disque { name: media, mountPath: /srv/media, sizeGB: 1 }
     region: frankfurt
     branch: main
     autoDeploy: true
     healthCheckPath: /healthz/
-    disk:
-      name: media
-      mountPath: /srv/media
-      sizeGB: 1
     envVars:
       - key: DJANGO_SETTINGS_MODULE
         value: config.settings.prod
@@ -41,9 +38,9 @@ services:
       - key: DJANGO_SECRET_KEY
         sync: false
       - key: IP_HASH_SALT
-        sync: false
-      - key: PROXY_SHARED_SECRET     # même valeur que dans Vercel
-        sync: false
+        generateValue: true
+      - key: PROXY_SHARED_SECRET     # généré par Render : à recopier dans Vercel
+        generateValue: true
 
       # --- Domaine public (URL Vercel ou domaine personnalisé) ---
       - key: SITE_URL                # ex. https://portfolio.vercel.app
