@@ -39,3 +39,6 @@ frontend/robots.txt
 # Node / builds
 node_modules/
 frontend/dist/
+
+# Vercel CLI
+.vercel
