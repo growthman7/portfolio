@@ -2,12 +2,26 @@
 from django.core.exceptions import ImproperlyConfigured
 
 from .base import *
-from .base import LOG_DIR, LOGGING, SECRET_KEY, env
+from .base import (
+    CLIENT_IP_HEADER,
+    LOG_DIR,
+    LOGGING,
+    PROXY_SHARED_SECRET,
+    SECRET_KEY,
+    env,
+)
 
 DEBUG = False
 
 if len(SECRET_KEY) < 50 or SECRET_KEY.startswith("change-me"):
     raise ImproperlyConfigured("DJANGO_SECRET_KEY doit être une valeur aléatoire d'au moins 50 caractères.")
+
+if PROXY_SHARED_SECRET and (len(PROXY_SHARED_SECRET) < 32 or PROXY_SHARED_SECRET.startswith("change-me")):
+    raise ImproperlyConfigured("PROXY_SHARED_SECRET doit être une valeur aléatoire d'au moins 32 caractères.")
+
+# Un en-tête d'IP autre que X-Real-IP (écrasé par Nginx) n'est fiable que si l'accès direct est bloqué.
+if CLIENT_IP_HEADER.lower() != "x-real-ip" and not PROXY_SHARED_SECRET:
+    raise ImproperlyConfigured("CLIENT_IP_HEADER personnalisé : PROXY_SHARED_SECRET est obligatoire.")
 
 # HTTPS obligatoire
 SECURE_SSL_REDIRECT = env.bool("DJANGO_SECURE_SSL_REDIRECT", default=True)

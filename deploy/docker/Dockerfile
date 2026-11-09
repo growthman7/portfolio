@@ -15,7 +15,9 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
     PIP_NO_CACHE_DIR=1 \
     PIP_DISABLE_PIP_VERSION_CHECK=1 \
-    DJANGO_SETTINGS_MODULE=config.settings.prod
+    DJANGO_SETTINGS_MODULE=config.settings.prod \
+    PORT=8000 \
+    WEB_CONCURRENCY=3
 
 RUN apt-get update \
  && apt-get install -y --no-install-recommends libpq5 postgresql-client fonts-dejavu-core \
@@ -44,10 +46,12 @@ RUN DJANGO_SECRET_KEY=build-only-$(date +%s)-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 
 COPY --chmod=0555 deploy/docker/entrypoint.sh /usr/local/bin/entrypoint.sh
 
-USER app
+# Pas de « USER app » ici : l'entrypoint abandonne lui-même les privilèges root après avoir attribué le
+# disque des médias (hébergeurs comme Render). Docker Compose impose « user: app » dès le démarrage.
 EXPOSE 8000
 HEALTHCHECK --interval=30s --timeout=5s --start-period=40s --retries=3 \
-  CMD python -c "import urllib.request,sys; sys.exit(0 if urllib.request.urlopen('http://127.0.0.1:8000/healthz/', timeout=4).status == 200 else 1)"
+  CMD python -c "import urllib.request,sys; sys.exit(0 if urllib.request.urlopen('http://127.0.0.1:%s/healthz/' % __import__('os').environ.get('PORT', '8000'), timeout=4).status == 200 else 1)"
 
 ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
-CMD ["gunicorn", "config.wsgi:application", "--bind", "0.0.0.0:8000", "--workers", "3", "--threads", "2", "--timeout", "30", "--max-requests", "1000", "--max-requests-jitter", "100", "--access-logfile", "-", "--forwarded-allow-ips", "*"]
+# Gunicorn lit PORT (adresse d'écoute 0.0.0.0:$PORT) et WEB_CONCURRENCY (nombre de workers) : réglables par l'hébergeur.
+CMD ["gunicorn", "config.wsgi:application", "--threads", "2", "--timeout", "30", "--max-requests", "1000", "--max-requests-jitter", "100", "--access-logfile", "-", "--forwarded-allow-ips", "*"]

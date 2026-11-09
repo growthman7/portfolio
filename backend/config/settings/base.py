@@ -62,6 +62,10 @@ def secret(name: str) -> str:
 SECRET_KEY = secret("DJANGO_SECRET_KEY")
 DEBUG = False
 ALLOWED_HOSTS = env.list("DJANGO_ALLOWED_HOSTS", default=["localhost", "127.0.0.1"])
+# Render fournit le nom d'hôte public du service : utilisé par le proxy Vercel et la sonde /healthz/.
+RENDER_EXTERNAL_HOSTNAME = env.str("RENDER_EXTERNAL_HOSTNAME", default="")
+if RENDER_EXTERNAL_HOSTNAME and RENDER_EXTERNAL_HOSTNAME not in ALLOWED_HOSTS:
+    ALLOWED_HOSTS.append(RENDER_EXTERNAL_HOSTNAME)
 
 INSTALLED_APPS = [
     "django.contrib.auth",
@@ -84,6 +88,7 @@ INSTALLED_APPS = [
 # exclusivement par la page d'administration React (frontend/admin.html) et l'API protégée.
 
 MIDDLEWARE = [
+    "apps.core.middleware.proxy_secret.ProxySecretMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "apps.core.middleware.security_headers.SecurityHeadersMiddleware",
     "apps.core.middleware.admin_guard.AdminAreaGuardMiddleware",
@@ -221,10 +226,16 @@ CONTENT_SECURITY_POLICY = (
 )
 PERMISSIONS_POLICY = "camera=(), microphone=(), geolocation=(), payment=(), usb=(), interest-cohort=()"
 
-# Proxy inverse : faire confiance à X-Real-IP uniquement si Nginx est devant.
+# Proxy inverse : faire confiance à l'en-tête d'IP cliente uniquement si un proxy de confiance est devant.
+# Nginx : X-Real-IP. Vercel → Render : X-Forwarded-For (1er élément), avec PROXY_SHARED_SECRET obligatoire.
 TRUST_PROXY_HEADERS = env.bool("TRUST_PROXY_HEADERS", default=False)
+CLIENT_IP_HEADER = env.str("CLIENT_IP_HEADER", default="X-Real-IP")
+PROXY_SHARED_SECRET = env.str("PROXY_SHARED_SECRET", default="")
 if TRUST_PROXY_HEADERS:
     SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+
+# Médias servis par Django (hébergeur sans Nginx, ex. Render) : extensions limitées, jamais exécutés.
+SERVE_MEDIA = env.bool("SERVE_MEDIA", default=False)
 
 # Liste blanche d'IP pour l'espace d'administration (vide = désactivée).
 ADMIN_ALLOWED_IPS = env.list("ADMIN_ALLOWED_IPS", default=[])

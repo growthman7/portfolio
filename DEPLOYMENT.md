@@ -1,5 +1,82 @@
 # Déploiement en production
 
+Deux options : **Vercel + Render** (plateformes managées, ci-dessous) ou **serveur Docker + Nginx** (sections 1 à 10).
+
+## Option A — Frontend sur Vercel, backend sur Render
+
+```
+Navigateur ──HTTPS──▶ Vercel (une seule origine)
+                      ├── /, /projets/…, /gestion/…  build React (dist/), en-têtes de sécurité (vercel.json)
+                      └── /api/, /media/, /healthz/  ──proxy + en-tête secret──▶ Render : Django (Docker)
+                                                                                  ├── PostgreSQL (réseau privé)
+                                                                                  └── disque /srv/media
+```
+
+Le navigateur ne parle qu'à Vercel : cookies de session et CSRF restent « même origine » (aucun CORS, aucun
+cookie tiers). Render refuse toute requête sans le secret `PROXY_SHARED_SECRET` (sauf `/healthz/`), ce qui
+rend fiable l'IP du visiteur transmise par Vercel (limitation de débit, verrouillage, liste blanche admin).
+
+### 1. Secrets
+
+```bash
+python -c "import secrets; [print(k + '=' + secrets.token_urlsafe(n)) for k, n in (('DJANGO_SECRET_KEY', 64), ('IP_HASH_SALT', 48), ('PROXY_SHARED_SECRET', 48))]"
+```
+
+Ne les versionnez jamais ; conservez-les dans un gestionnaire de mots de passe.
+
+### 2. Render (backend)
+
+1. *New → Blueprint* → dépôt `growthman7/portfolio` (branche `main`) : `render.yaml` crée la base
+   `portfolio-db` (PostgreSQL 16, sans accès Internet) et le service `portfolio-api` (Docker, disque 1 Go).
+2. Renseignez les variables `sync: false` :
+
+   | Variable | Valeur |
+   |---|---|
+   | `DJANGO_SECRET_KEY`, `IP_HASH_SALT`, `PROXY_SHARED_SECRET` | Étape 1 |
+   | `SITE_URL` | `https://<projet>.vercel.app` (ou votre domaine) |
+   | `DJANGO_ALLOWED_HOSTS` | `<projet>.vercel.app` (l'hôte `*.onrender.com` est ajouté automatiquement) |
+   | `DJANGO_CSRF_TRUSTED_ORIGINS` | `https://<projet>.vercel.app` |
+   | `EMAIL_HOST`, `EMAIL_HOST_USER`, `EMAIL_HOST_PASSWORD`, `DEFAULT_FROM_EMAIL`, `CONTACT_NOTIFY_EMAIL` | Fournisseur SMTP (TLS) |
+   | `ADMIN_ALLOWED_IPS` | Facultatif (CIDR) ; laisser vide sinon |
+
+3. Une fois déployé, `https://portfolio-api.onrender.com/healthz/` doit répondre `{"status": "ok"}` et
+   `https://portfolio-api.onrender.com/api/v1/site/` doit répondre **404** (accès direct refusé).
+4. Compte administrateur : *Shell* du service, puis
+   `python manage.py create_portfolio_admin --username <identifiant> --email <e-mail>`.
+
+Offres : le disque persistant exige une offre web payante (`starter`) et la base gratuite de Render expire
+après 30 jours (`basic-256mb` dans le Blueprint). Une seule base est fournie : migrations et application
+utilisent le même rôle PostgreSQL (la séparation propriétaire/applicatif de l'option B n'est pas reproduite).
+
+### 3. Vercel (frontend)
+
+1. *Add New → Project* → dépôt `growthman7/portfolio`, **Root Directory : `frontend`** (le reste est lu dans
+   `frontend/vercel.json`).
+2. *Settings → Environment Variables* (Production, et Preview si besoin), puis redéployez :
+
+   | Variable | Valeur |
+   |---|---|
+   | `BACKEND_URL` | `https://portfolio-api.onrender.com` (sans `/` final) |
+   | `PROXY_SHARED_SECRET` | Même valeur que sur Render (variable de type *Sensitive*) |
+
+3. Si vous ajoutez un domaine personnalisé, mettez à jour `SITE_URL`, `DJANGO_ALLOWED_HOSTS` et
+   `DJANGO_CSRF_TRUSTED_ORIGINS` sur Render.
+4. Le préfixe d'administration `gestion` est écrit dans `vercel.json` : modifiez-le aussi si vous changez
+   `DASHBOARD_PREFIX`.
+
+### 4. Vérifications
+
+```bash
+curl -sI https://<projet>.vercel.app/ | grep -iE "strict-transport|content-security|x-frame|x-content-type"
+curl -s https://<projet>.vercel.app/healthz/                      # {"status": "ok"}
+curl -s -o /dev/null -w "%{http_code}\n" https://<projet>.vercel.app/api/v1/admin/dashboard/   # 403
+```
+
+Limite connue : les pages HTML pré-rendues pour le SEO (`build_seo`, sitemap.xml, robots.txt) ne sont pas
+publiées sur Vercel ; le site fonctionne en application monopage.
+
+## Option B — Serveur Docker + Nginx
+
 Architecture : **Nginx** (TLS, fichiers statiques, limitation de débit) → **Gunicorn/Django** → **PostgreSQL**, orchestrés par Docker Compose. Seul Nginx est exposé ; PostgreSQL est sur un réseau Docker interne.
 
 ```

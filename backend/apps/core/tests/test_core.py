@@ -264,12 +264,67 @@ class ValidatorAndNetworkTests(PortfolioAPITestCase):
         with override_settings(TRUST_PROXY_HEADERS=True):
             request = RequestFactory().get("/", REMOTE_ADDR="10.0.0.2", HTTP_X_REAL_IP="203.0.113.50")
             self.assertEqual(get_client_ip(request), "203.0.113.50")
+        # Vercel → Render : Vercel écrit l'IP du visiteur, Render ajoute la sienne à la fin.
+        with override_settings(TRUST_PROXY_HEADERS=True, CLIENT_IP_HEADER="X-Forwarded-For"):
+            request = RequestFactory().get(
+                "/", REMOTE_ADDR="10.0.0.2", HTTP_X_REAL_IP="1.2.3.4", HTTP_X_FORWARDED_FOR="203.0.113.60, 76.76.21.1"
+            )
+            self.assertEqual(get_client_ip(request), "203.0.113.60")
+
+    def test_proxy_secret_blocks_direct_access(self):
+        secret = "s" * 40
+        with override_settings(PROXY_SHARED_SECRET=secret):
+            self.assertEqual(self.client.get("/api/v1/site/").status_code, 404)
+            self.assertEqual(
+                self.client.get("/api/v1/site/", HTTP_X_PORTFOLIO_PROXY_SECRET="wrong").status_code, 404
+            )
+            self.assertEqual(
+                self.client.get("/api/v1/site/", HTTP_X_PORTFOLIO_PROXY_SECRET=secret).status_code, 200
+            )
+            self.assertEqual(self.client.get("/healthz/").status_code, 200)
 
     def test_log_filter_redacts_secrets(self):
         record = logging.LogRecord("t", logging.INFO, "", 0, "login password=hunter2 token: abc", (), None)
         RedactSecretsFilter().filter(record)
         self.assertNotIn("hunter2", record.getMessage())
         self.assertNotIn("abc", record.getMessage())
+
+
+class MediaServingTests(PortfolioAPITestCase):
+    """Médias servis par Django en production sans Nginx (SERVE_MEDIA, ex. Render)."""
+
+    def setUp(self):
+        super().setUp()
+        from django.http import Http404
+
+        from config.urls import media
+
+        self.view, self.not_found = media, Http404
+        root = settings.MEDIA_ROOT / "public" / "test"
+        root.mkdir(parents=True, exist_ok=True)
+        (root / "a.webp").write_bytes(b"RIFF0000WEBP")
+        (root / "cv.pdf").write_bytes(pdf_bytes())
+        (root / "x.html").write_bytes(b"<script>alert(1)</script>")
+        self.addCleanup(shutil.rmtree, settings.MEDIA_ROOT / "public" / "test", True)
+
+    def test_image_is_served_with_strict_headers(self):
+        response = self.view(RequestFactory().get("/media/public/test/a.webp"), "public/test/a.webp")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response["Content-Type"], "image/webp")
+        self.assertEqual(response["Content-Security-Policy"], "default-src 'none'; sandbox")
+        self.assertEqual(response["X-Content-Type-Options"], "nosniff")
+
+    def test_pdf_has_no_csp_marker(self):
+        response = self.view(RequestFactory().get("/media/public/test/cv.pdf"), "public/test/cv.pdf")
+        self.assertEqual(response["Content-Type"], "application/pdf")
+        self.assertTrue(response.skip_csp)
+
+    def test_forbidden_extensions_traversal_and_writes(self):
+        for path in ("public/test/x.html", "../manage.py", "public/.hidden/a.webp", "public/test/../../x.webp"):
+            with self.assertRaises(self.not_found, msg=path):
+                self.view(RequestFactory().get("/media/" + path), path)
+        response = self.view(RequestFactory().post("/media/public/test/a.webp"), "public/test/a.webp")
+        self.assertEqual(response.status_code, 405)
 
 
 class HealthTests(PortfolioAPITestCase):

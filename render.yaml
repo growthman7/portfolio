@@ -1,0 +1,118 @@
+# Blueprint Render : backend Django (image Docker) + PostgreSQL managé.
+# Dashboard Render → New → Blueprint → dépôt growthman7/portfolio. Les valeurs « sync: false » sont
+# demandées à la création (voir DEPLOYMENT.md, section Vercel + Render) et ne sont jamais versionnées.
+#
+# Sécurité (OWASP) : base joignable uniquement par le réseau privé Render (ipAllowList vide), secrets hors
+# du dépôt, backend fermé à tout appel ne venant pas du proxy Vercel (PROXY_SHARED_SECRET).
+
+databases:
+  - name: portfolio-db
+    databaseName: portfolio_v2
+    user: portfolio_owner
+    plan: basic-256mb          # l'offre gratuite expire au bout de 30 jours : inadaptée à la production
+    region: frankfurt
+    postgresMajorVersion: "16"
+    ipAllowList: []            # aucune connexion depuis Internet
+
+services:
+  - type: web
+    name: portfolio-api
+    runtime: docker
+    dockerfilePath: ./deploy/docker/Dockerfile
+    dockerContext: .
+    plan: starter              # un disque persistant (médias) exige une offre payante
+    region: frankfurt
+    branch: main
+    autoDeploy: true
+    healthCheckPath: /healthz/
+    disk:
+      name: media
+      mountPath: /srv/media
+      sizeGB: 1
+    envVars:
+      - key: DJANGO_SETTINGS_MODULE
+        value: config.settings.prod
+      - key: PORT
+        value: "8000"
+      - key: WEB_CONCURRENCY
+        value: "2"
+
+      # --- Secrets (générés hors du dépôt, voir DEPLOYMENT.md) ---
+      - key: DJANGO_SECRET_KEY
+        sync: false
+      - key: IP_HASH_SALT
+        sync: false
+      - key: PROXY_SHARED_SECRET     # même valeur que dans Vercel
+        sync: false
+
+      # --- Domaine public (URL Vercel ou domaine personnalisé) ---
+      - key: SITE_URL                # ex. https://portfolio.vercel.app
+        sync: false
+      - key: DJANGO_ALLOWED_HOSTS    # ex. portfolio.vercel.app (l'hôte Render est ajouté automatiquement)
+        sync: false
+      - key: DJANGO_CSRF_TRUSTED_ORIGINS   # ex. https://portfolio.vercel.app
+        sync: false
+      - key: DASHBOARD_PREFIX
+        value: gestion
+      - key: ADMIN_ALLOWED_IPS       # facultatif : CIDR autorisés pour l'administration
+        sync: false
+
+      # --- Proxy de confiance : Vercel (IP du visiteur dans X-Forwarded-For, accès direct refusé) ---
+      - key: TRUST_PROXY_HEADERS
+        value: "true"
+      - key: CLIENT_IP_HEADER
+        value: X-Forwarded-For
+      - key: SERVE_MEDIA
+        value: "true"
+      - key: DJANGO_LOG_LEVEL
+        value: INFO
+      - key: DJANGO_HSTS_PRELOAD
+        value: "false"
+
+      # --- PostgreSQL (fourni par Render) ---
+      - key: POSTGRES_HOST
+        fromDatabase: { name: portfolio-db, property: host }
+      - key: POSTGRES_PORT
+        fromDatabase: { name: portfolio-db, property: port }
+      - key: POSTGRES_DB
+        fromDatabase: { name: portfolio-db, property: database }
+      - key: POSTGRES_OWNER_USER
+        fromDatabase: { name: portfolio-db, property: user }
+      - key: POSTGRES_OWNER_PASSWORD
+        fromDatabase: { name: portfolio-db, property: password }
+      - key: POSTGRES_USER
+        fromDatabase: { name: portfolio-db, property: user }
+      - key: POSTGRES_PASSWORD
+        fromDatabase: { name: portfolio-db, property: password }
+
+      # --- E-mails (SMTP avec TLS) ---
+      - key: EMAIL_HOST
+        sync: false
+      - key: EMAIL_PORT
+        value: "587"
+      - key: EMAIL_USE_TLS
+        value: "true"
+      - key: EMAIL_HOST_USER
+        sync: false
+      - key: EMAIL_HOST_PASSWORD
+        sync: false
+      - key: DEFAULT_FROM_EMAIL
+        sync: false
+      - key: CONTACT_NOTIFY_EMAIL
+        sync: false
+      - key: PASSWORD_RESET_ENABLED
+        value: "true"
+
+      # --- Limitation de débit ---
+      - key: THROTTLE_PUBLIC
+        value: 120/min
+      - key: THROTTLE_CONTACT
+        value: 5/hour
+      - key: THROTTLE_CONTACT_DAILY
+        value: 20/day
+      - key: THROTTLE_LOGIN
+        value: 10/min
+      - key: AXES_FAILURE_LIMIT
+        value: "5"
+      - key: AXES_COOLOFF_MINUTES
+        value: "15"

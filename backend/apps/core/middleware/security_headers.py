@@ -10,7 +10,8 @@ class SecurityHeadersMiddleware:
 
     def __call__(self, request):
         response = self.get_response(request)
-        response.headers.setdefault("Content-Security-Policy", self.csp)
+        if not getattr(response, "skip_csp", False):  # PDF servis par config.urls.media
+            response.headers.setdefault("Content-Security-Policy", self.csp)
         response.headers.setdefault("Permissions-Policy", self.permissions_policy)
         response.headers.setdefault("Cross-Origin-Resource-Policy", "same-origin")
         if request.path.startswith("/api/"):

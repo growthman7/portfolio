@@ -37,6 +37,7 @@ services:
       - static:/srv/static-public
       - logs:/srv/app/logs
     networks: [backend, frontend]
+    user: app
     read_only: true
     tmpfs: [/tmp]
     security_opt: ["no-new-privileges:true"]

@@ -6,6 +6,17 @@
 #  4. lance Gunicorn avec le rôle APPLICATIF (droits limités aux données).
 set -eu
 
+# Hébergeur montant un disque appartenant à root (ex. disque persistant Render) : le conteneur démarre
+# en root UNIQUEMENT pour attribuer /srv/media à l'utilisateur app, puis abandonne définitivement ses
+# privilèges (aucune capacité, no_new_privs) avant toute autre action. Avec Docker Compose, le conteneur
+# démarre directement en utilisateur app (« user: app ») et ce bloc est ignoré.
+if [ "$(id -u)" = "0" ]; then
+  mkdir -p /srv/media
+  find /srv/media ! -user app -exec chown app:app {} +
+  chmod 750 /srv/media
+  exec setpriv --reuid=app --regid=app --init-groups --inh-caps=-all --bounding-set=-all --no-new-privs -- "$0" "$@"
+fi
+
 export DJANGO_MEDIA_ROOT=/srv/media DJANGO_STATIC_ROOT=/srv/static FRONTEND_BUILD_DIR=/srv/frontend DJANGO_LOG_DIR=/srv/app/logs
 
 echo "Attente de PostgreSQL…"
@@ -14,6 +25,13 @@ until pg_isready -h "${POSTGRES_HOST:-db}" -p "${POSTGRES_PORT:-5432}" -q; do
   i=$((i + 1)); [ "$i" -gt 60 ] && echo "PostgreSQL indisponible." && exit 1
   sleep 1
 done
+
+# Les médias doivent être persistants (volume Docker, disque Render) et inscriptibles par l'utilisateur app.
+if ! touch /srv/media/.write-test 2>/dev/null; then
+  echo "ERREUR : /srv/media n'est pas inscriptible par l'utilisateur $(id -un). Vérifiez le volume ou le disque monté." >&2
+  exit 1
+fi
+rm -f /srv/media/.write-test
 
 as_owner() {
   POSTGRES_USER="$POSTGRES_OWNER_USER" POSTGRES_PASSWORD="$POSTGRES_OWNER_PASSWORD" "$@"

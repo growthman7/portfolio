@@ -1,0 +1,98 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": "vite",
+  "installCommand": "npm ci --no-audit --no-fund",
+  "buildCommand": "npm run build",
+  "outputDirectory": "dist",
+  "routes": [
+    {
+      "src": "/(api/.*|healthz/)",
+      "dest": "${BACKEND_URL}/$1",
+      "env": ["BACKEND_URL"],
+      "headers": {
+        "x-vercel-enable-rewrite-caching": "0",
+        "Cache-Control": "no-store"
+      },
+      "transforms": [
+        { "type": "request.headers", "op": "delete", "target": { "key": "x-portfolio-proxy-secret" } },
+        {
+          "type": "request.headers",
+          "op": "set",
+          "target": { "key": "x-portfolio-proxy-secret" },
+          "args": "$PROXY_SHARED_SECRET",
+          "env": ["PROXY_SHARED_SECRET"]
+        }
+      ]
+    },
+    {
+      "src": "/(media/.*)",
+      "methods": ["GET", "HEAD"],
+      "dest": "${BACKEND_URL}/$1",
+      "env": ["BACKEND_URL"],
+      "transforms": [
+        { "type": "request.headers", "op": "delete", "target": { "key": "x-portfolio-proxy-secret" } },
+        { "type": "request.headers", "op": "delete", "target": { "key": "cookie" } },
+        {
+          "type": "request.headers",
+          "op": "set",
+          "target": { "key": "x-portfolio-proxy-secret" },
+          "args": "$PROXY_SHARED_SECRET",
+          "env": ["PROXY_SHARED_SECRET"]
+        }
+      ]
+    },
+    { "src": "/media/.*", "status": 405 }
+  ],
+  "rewrites": [
+    { "source": "/gestion", "destination": "/admin.html" },
+    { "source": "/gestion/:path*", "destination": "/admin.html" },
+    { "source": "/:path((?!api/|media/|healthz/|assets/).*)", "destination": "/index.html" }
+  ],
+  "headers": [
+    {
+      "source": "/:path((?!api/|media/|healthz/).*)",
+      "headers": [
+        { "key": "Strict-Transport-Security", "value": "max-age=31536000; includeSubDomains" },
+        { "key": "X-Content-Type-Options", "value": "nosniff" },
+        { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" },
+        { "key": "X-Frame-Options", "value": "DENY" },
+        { "key": "Cross-Origin-Opener-Policy", "value": "same-origin" },
+        { "key": "Cross-Origin-Resource-Policy", "value": "same-origin" },
+        { "key": "Permissions-Policy", "value": "camera=(), microphone=(), geolocation=(), payment=(), usb=(), interest-cohort=()" },
+        {
+          "key": "Content-Security-Policy",
+          "value": "default-src 'self'; img-src 'self' data:; script-src 'self'; style-src 'self'; font-src 'self'; connect-src 'self'; media-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'; object-src 'none'; upgrade-insecure-requests"
+        }
+      ]
+    },
+    {
+      "source": "/assets/app/:file*",
+      "headers": [{ "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }]
+    },
+    {
+      "source": "/assets/:dir(fonts|icons|img)/:file*",
+      "headers": [{ "key": "Cache-Control", "value": "public, max-age=2592000" }]
+    },
+    {
+      "source": "/gestion/:path*",
+      "headers": [
+        { "key": "Cache-Control", "value": "no-store, private" },
+        { "key": "X-Robots-Tag", "value": "noindex, nofollow" }
+      ]
+    },
+    {
+      "source": "/gestion",
+      "headers": [
+        { "key": "Cache-Control", "value": "no-store, private" },
+        { "key": "X-Robots-Tag", "value": "noindex, nofollow" }
+      ]
+    },
+    {
+      "source": "/admin.html",
+      "headers": [
+        { "key": "Cache-Control", "value": "no-store, private" },
+        { "key": "X-Robots-Tag", "value": "noindex, nofollow" }
+      ]
+    }
+  ]
+}

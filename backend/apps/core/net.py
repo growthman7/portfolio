@@ -10,13 +10,18 @@ from django.conf import settings
 
 def get_client_ip(request) -> str:
     """
-    Derrière Nginx, l'en-tête X-Real-IP est écrasé par le proxy avec l'adresse réelle
-    ($remote_addr) : il ne peut pas être forgé par le client. Sans proxy de confiance,
-    on utilise REMOTE_ADDR. X-Forwarded-For (falsifiable) n'est jamais lu.
+    Adresse IP cliente, lue dans l'en-tête posé par le proxy de confiance (CLIENT_IP_HEADER) :
+    - derrière Nginx : X-Real-IP, écrasé par le proxy avec $remote_addr ;
+    - derrière Vercel (frontend) → Render (backend) : premier élément de X-Forwarded-For, que Vercel
+      remplace par l'adresse du visiteur (les hôpitaux suivants, comme Render, ajoutent à la fin).
+      Accepté uniquement parce que ProxySecretMiddleware refuse toute requête sans le secret partagé :
+      un appel direct au backend ne peut donc pas falsifier cet en-tête (vérifié au démarrage, prod.py).
+    Sans proxy de confiance, on utilise REMOTE_ADDR et aucun en-tête n'est lu.
     """
     candidate = None
     if getattr(settings, "TRUST_PROXY_HEADERS", False):
-        candidate = request.META.get("HTTP_X_REAL_IP")
+        header = getattr(settings, "CLIENT_IP_HEADER", "X-Real-IP")
+        candidate = (request.META.get("HTTP_" + header.upper().replace("-", "_")) or "").split(",")[0]
     candidate = (candidate or request.META.get("REMOTE_ADDR") or "").strip()
     try:
         return str(ipaddress.ip_address(candidate))

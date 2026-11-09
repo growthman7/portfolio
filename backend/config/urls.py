@@ -18,6 +18,38 @@ urlpatterns = [
     path("healthz/", healthz),
 ]
 
+# Médias téléversés, servis comme données (mêmes règles que Nginx) : extensions en liste blanche,
+# aucun contenu exécutable, chemins confinés à MEDIA_ROOT par django.views.static.serve.
+MEDIA_RULES = {
+    ".webp": ("image/webp", "public, max-age=2592000"),
+    ".avif": ("image/avif", "public, max-age=2592000"),
+    ".pdf": ("application/pdf", "public, max-age=86400"),
+}
+
+
+def media(request, path):
+    from django.http import Http404
+
+    if request.method not in ("GET", "HEAD"):
+        return JsonResponse({"detail": "Méthode non autorisée."}, status=405)
+    rule = MEDIA_RULES.get(Path(path).suffix.lower())
+    if rule is None or any(part.startswith(".") for part in Path(path).parts):
+        raise Http404
+    response = serve(request, path, document_root=settings.MEDIA_ROOT)
+    response["Content-Type"], response["Cache-Control"] = rule
+    response["X-Content-Type-Options"] = "nosniff"
+    if rule[0] == "application/pdf":
+        # Pas de CSP : elle bloquerait la visionneuse PDF intégrée du navigateur (voir SecurityHeadersMiddleware).
+        response.skip_csp = True
+        response["Content-Disposition"] = "inline"
+    else:
+        response["Content-Security-Policy"] = "default-src 'none'; sandbox"
+    return response
+
+
+if getattr(settings, "SERVE_MEDIA", False) and not getattr(settings, "SERVE_FRONTEND", False):
+    urlpatterns.append(re_path(r"^media/(?P<path>.+)$", media))
+
 if getattr(settings, "SERVE_FRONTEND", False):
     # Développement uniquement : en production, Nginx sert le frontend et les médias.
     # Sert le frontend React construit (frontend/dist) comme Nginx : fichier exact, sinon dossier/index.html,
