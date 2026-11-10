@@ -34,9 +34,11 @@ COPY --from=frontend /app/dist /srv/frontend-src
 # Fichiers statiques du dashboard et frontend de production construits dans l'image.
 # Valeurs factices uniquement pour la construction (aucun secret dans l'image).
 RUN DJANGO_SECRET_KEY=build-only-$(date +%s)-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx \
+    IP_HASH_SALT=build-only-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx \
     DJANGO_ALLOWED_HOSTS=localhost DJANGO_STATIC_ROOT=/srv/static \
     python manage.py collectstatic --noinput \
  && DJANGO_SECRET_KEY=build-only-$(date +%s)-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx \
+    IP_HASH_SALT=build-only-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx \
     DJANGO_ALLOWED_HOSTS=localhost \
     python manage.py build_frontend --source /srv/frontend-src --target /srv/frontend-build --skip-seo \
  && mkdir -p /srv/media /srv/frontend /srv/static-public /srv/app/logs \
