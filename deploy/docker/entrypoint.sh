@@ -14,7 +14,15 @@ if [ "$(id -u)" = "0" ]; then
   mkdir -p /srv/media
   find /srv/media ! -user app -exec chown app:app {} +
   chmod 750 /srv/media
-  exec setpriv --reuid=app --regid=app --init-groups --inh-caps=-all --bounding-set=-all --no-new-privs -- "$0" "$@"
+  # Vider le « bounding set » exige CAP_SETPCAP, que certains hébergeurs (Render) retirent au conteneur :
+  # on ne le demande que s'il est permis. Le passage à l'utilisateur app retire de toute façon les
+  # capacités effectives et permises, et no_new_privs interdit d'en regagner.
+  drop="--reuid=app --regid=app --init-groups --inh-caps=-all --no-new-privs"
+  if setpriv $drop --bounding-set=-all true 2>/dev/null; then
+    drop="$drop --bounding-set=-all"
+  fi
+  # shellcheck disable=SC2086
+  exec setpriv $drop -- "$0" "$@"
 fi
 
 export DJANGO_MEDIA_ROOT=/srv/media DJANGO_STATIC_ROOT=/srv/static FRONTEND_BUILD_DIR=/srv/frontend DJANGO_LOG_DIR=/srv/app/logs
