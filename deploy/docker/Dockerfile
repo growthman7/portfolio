@@ -44,6 +44,7 @@ RUN DJANGO_SECRET_KEY=build-only-$(date +%s)-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
  && mkdir -p /srv/media /srv/frontend /srv/static-public /srv/app/logs \
  && chown -R app:app /srv/media /srv/frontend /srv/static-public /srv/app/logs \
  && chmod -R a-w /srv/app /srv/static /srv/frontend-build \
+ && rm -f /srv/app/logs/* \
  && chmod u+w /srv/app/logs
 
 COPY --chmod=0555 deploy/docker/entrypoint.sh /usr/local/bin/entrypoint.sh
