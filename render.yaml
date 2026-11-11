@@ -54,6 +54,15 @@ services:
       - key: ADMIN_ALLOWED_IPS       # facultatif : CIDR autorisés pour l'administration
         sync: false
 
+      # --- Premier administrateur (pas de Shell sur l'offre gratuite) : créé au démarrage si les trois
+      #     valeurs sont renseignées et qu'aucun administrateur n'existe. Supprimez ADMIN_PASSWORD ensuite.
+      - key: ADMIN_USERNAME
+        sync: false
+      - key: ADMIN_EMAIL
+        sync: false
+      - key: ADMIN_PASSWORD
+        sync: false
+
       # --- Proxy de confiance : Vercel (IP du visiteur dans X-Forwarded-For, accès direct refusé) ---
       - key: TRUST_PROXY_HEADERS
         value: "true"

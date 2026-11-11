@@ -43,6 +43,10 @@ Ne les versionnez jamais ; conservez-les dans un gestionnaire de mots de passe.
    `https://portfolio-api.onrender.com/api/v1/site/` doit répondre **404** (accès direct refusé).
 4. Compte administrateur : *Shell* du service, puis
    `python manage.py create_portfolio_admin --username <identifiant> --email <e-mail>`.
+   Sans Shell (offre gratuite) : dans *Environment*, renseignez `ADMIN_USERNAME`, `ADMIN_EMAIL` et
+   `ADMIN_PASSWORD` (14 caractères minimum, non courant, différent de l'identifiant), puis redéployez.
+   Le compte est créé au démarrage s'il n'existe encore aucun administrateur. Supprimez ensuite
+   `ADMIN_PASSWORD`.
 
 Offres : le Blueprint utilise les offres gratuites (`plan: free`). Limites : le service se met en veille après
 15 min d'inactivité, les fichiers téléversés (photo, CV, images) sont perdus à chaque redéploiement ou

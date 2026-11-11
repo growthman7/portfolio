@@ -49,6 +49,17 @@ as_owner python manage.py migrate --noinput
 as_owner python manage.py createcachetable
 python manage.py seed_placeholders
 
+# Hébergeur sans accès Shell (offre gratuite Render) : création du premier administrateur à partir de
+# variables d'environnement. Sans effet si un administrateur existe déjà ; la politique de mots de passe
+# s'applique. Supprimez ADMIN_PASSWORD chez l'hébergeur une fois le compte créé.
+if [ -n "${ADMIN_USERNAME:-}" ] && [ -n "${ADMIN_EMAIL:-}" ] && [ -n "${ADMIN_PASSWORD:-}" ]; then
+  python manage.py create_portfolio_admin --username "$ADMIN_USERNAME" --email "$ADMIN_EMAIL" \
+    --password-env ADMIN_PASSWORD \
+    || echo "Compte administrateur non créé (voir le message ci-dessus) : le démarrage continue."
+fi
+# Le mot de passe ne doit pas rester dans l'environnement du serveur d'application.
+unset ADMIN_PASSWORD
+
 # Publication du frontend construit dans le volume partagé (lu par Nginx en lecture seule).
 find /srv/frontend -mindepth 1 -delete
 cp -R /srv/frontend-build/. /srv/frontend/
