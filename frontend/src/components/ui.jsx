@@ -2,6 +2,9 @@
  * Petits composants d'affichage partagés. Toutes les données de l'API passent par JSX :
  * React échappe le texte, aucun HTML venant de la base n'est jamais interprété.
  */
+import { flushSync } from "react-dom";
+import { Link, useNavigate } from "react-router";
+import { reducedMotion } from "../hooks/motion.js";
 import { useLang } from "../i18n/LanguageContext.jsx";
 
 const SPRITE = "/assets/icons/sprite.svg";
@@ -69,4 +72,21 @@ export function ExternalLink({ href, children, ...rest }) {
       {children}
     </a>
   );
+}
+
+/**
+ * Lien interne dont le changement de page passe par une transition de vue (fondu entre les deux écrans).
+ * Sans prise en charge du navigateur, avec « réduire les animations » ou pour un clic modifié
+ * (nouvel onglet…), c'est un lien ordinaire.
+ */
+export function TransitionLink({ to, onClick, ...props }) {
+  const navigate = useNavigate();
+  const go = (event) => {
+    onClick?.(event);
+    const plain = event.button === 0 && !event.metaKey && !event.ctrlKey && !event.shiftKey && !event.altKey;
+    if (event.defaultPrevented || !plain || !document.startViewTransition || reducedMotion()) return;
+    event.preventDefault();
+    document.startViewTransition(() => flushSync(() => navigate(to)));
+  };
+  return <Link to={to} {...props} onClick={go} />;
 }

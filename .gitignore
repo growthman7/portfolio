@@ -42,3 +42,6 @@ frontend/dist/
 
 # Vercel CLI
 .vercel
+
+# Tests de bout en bout (Playwright)
+backend/.test-frontend-e2e/

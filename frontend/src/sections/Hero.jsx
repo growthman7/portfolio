@@ -14,7 +14,7 @@ function useTyped(reduced) {
     if (reduced) { setTyped(COMMAND); setDone(true); return undefined; }
     let cancelled = false;
     (async () => {
-      await wait(350);
+      await wait(700); // laisse le journal de démarrage s'écrire
       for (let i = 1; i <= COMMAND.length && !cancelled; i += 1) {
         setTyped(COMMAND.slice(0, i));
         await wait(85 + Math.round(Math.random() * 40) - 20); // léger aléa : rythme de frappe naturel
@@ -81,6 +81,9 @@ export function Hero({ profile, status }) {
         <div className="hero__text">
           <div className={`terminal${stage >= 1 ? " is-done" : ""}`}>
             <div className="terminal__dots" aria-hidden="true"><span /><span /><span /></div>
+            <p className="terminal__boot" aria-hidden="true">
+              {t.hero.boot.map((line, i) => <span key={line} style={{ "--i": i }}>{line}</span>)}
+            </p>
             <p className="terminal__line">
               <span className="terminal__user">{t.hero.prompt}</span><span className="terminal__path">:~$ </span>
               <span aria-hidden="true">{typed}</span><span className="cursor cursor--prompt" aria-hidden="true" />

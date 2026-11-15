@@ -169,8 +169,89 @@ class CreateAdminCommandTests(PortfolioAPITestCase):
             "create_portfolio_admin", username="chef", email="chef@example.test",
             password_env="TEST_ADMIN_PASSWORD", stdout=StringIO(),
         )
-        del os.environ["TEST_ADMIN_PASSWORD"]
         user = get_user_model().objects.get(username="chef")
         self.assertTrue(user.is_staff and not user.is_superuser)
+        # Démarrages suivants du conteneur : aucun nouveau compte, aucune erreur, mot de passe inchangé.
+        os.environ["TEST_ADMIN_PASSWORD"] = "Une-autre-phrase-de-passe-longue-2"
+        call_command(
+            "create_portfolio_admin", username="autre", email="autre@example.test", name="Autre",
+            password_env="TEST_ADMIN_PASSWORD", if_missing=True, stdout=StringIO(),
+        )
+        del os.environ["TEST_ADMIN_PASSWORD"]
+        self.assertFalse(get_user_model().objects.filter(username="autre").exists())
+        self.assertTrue(user.check_password("Phrase-de-passe-vraiment-longue-1"))
         self.assertTrue(user.groups.filter(name="portfolio_admins").exists())
         self.assertTrue(AuditLog.objects.filter(action=AuditLog.Action.ADMIN_CREATED, actor=user).exists())
+
+
+ADMINS = "/api/v1/admin/admins/"
+NEW_ADMIN = {
+    "first_name": "Ada", "last_name": "Lovelace", "email": "Ada@Example.test",
+    "password": "Phrase-de-passe-vraiment-longue-1", "password_confirm": "Phrase-de-passe-vraiment-longue-1",
+}
+
+
+class AdminManagementTests(PortfolioAPITestCase):
+    def logged_in(self, username, password):
+        """Session ouverte par le vrai formulaire de connexion (le jeton CSRF change à la connexion)."""
+        client = self.csrf_client()
+        self.assertEqual(client.post(LOGIN, {"username": username, "password": password}, format="json").status_code, 200)
+        client.credentials(HTTP_X_CSRFTOKEN=client.get("/api/v1/auth/csrf/").json()["csrf_token"])
+        return client
+
+    def test_requires_admin_role(self):
+        self.assertIn(APIClient().get(ADMINS).status_code, (401, 403))
+        client = APIClient()
+        client.force_login(self.staff_not_admin)
+        self.assertEqual(client.get(ADMINS).status_code, 403)
+        self.assertEqual(client.post(ADMINS, NEW_ADMIN, format="json").status_code, 403)
+        self.assertEqual(client.delete(f"{ADMINS}{self.admin.pk}/").status_code, 403)
+
+    def test_list_marks_current_admin_and_never_exposes_passwords(self):
+        rows = self.admin_client().get(ADMINS).json()
+        self.assertEqual([(row["username"], row["is_self"]) for row in rows], [("admin", True)])
+        self.assertNotIn("password", rows[0])
+
+    def test_create_validates_and_hashes_password(self):
+        client = self.admin_client()
+        for change, field in (
+            ({"password_confirm": "autre"}, "password_confirm"),
+            ({"password": "court", "password_confirm": "court"}, "password"),
+            ({"email": "ADMIN@example.test"}, "email"),  # doublon, casse ignorée
+        ):
+            response = client.post(ADMINS, {**NEW_ADMIN, **change}, format="json")
+            self.assertEqual(response.status_code, 400)
+            self.assertIn(field, response.json())
+        response = client.post(ADMINS, NEW_ADMIN, format="json")
+        self.assertEqual(response.status_code, 201)
+        self.assertNotIn("password", response.json())
+        user = get_user_model().objects.get(username="ada@example.test")
+        self.assertTrue(user.is_staff and not user.is_superuser and user.password.startswith(("argon2", "md5")))
+        self.assertNotIn(NEW_ADMIN["password"], user.password)
+        self.assertTrue(AuditLog.objects.filter(action=AuditLog.Action.ADMIN_CREATED, target_id=str(user.pk)).exists())
+
+    def test_initial_admin_can_be_replaced_but_last_admin_cannot_be_deleted(self):
+        first = self.logged_in("admin", PASSWORD)
+        # Seul administrateur : la suppression de son propre compte est refusée.
+        self.assertEqual(first.delete(f"{ADMINS}{self.admin.pk}/").status_code, 409)
+        self.assertEqual(first.post(ADMINS, NEW_ADMIN, format="json").status_code, 201)
+
+        second = self.logged_in("ada@example.test", NEW_ADMIN["password"])
+
+        # L'ancien administrateur supprime son compte : sa session ne vaut plus rien.
+        self.assertEqual(first.delete(f"{ADMINS}{self.admin.pk}/").status_code, 204)
+        self.assertIn(first.get("/api/v1/auth/me/").status_code, (401, 403))
+        self.assertFalse(get_user_model().objects.filter(username="admin").exists())
+
+        # Le nouveau garde tous les privilèges et devient à son tour impossible à supprimer.
+        self.assertEqual(second.get("/api/v1/admin/projects/").status_code, 200)
+        rows = second.get(ADMINS).json()
+        self.assertEqual(len(rows), 1)
+        self.assertEqual(second.delete(f"{ADMINS}{rows[0]['id']}/").status_code, 409)
+        self.assertEqual(second.delete(f"{ADMINS}999999/").status_code, 404)
+
+    def test_inactive_admin_does_not_count_as_a_remaining_admin(self):
+        client = self.admin_client()
+        client.post(ADMINS, NEW_ADMIN, format="json")
+        get_user_model().objects.filter(username="ada@example.test").update(is_active=False)
+        self.assertEqual(client.delete(f"{ADMINS}{self.admin.pk}/").status_code, 409)

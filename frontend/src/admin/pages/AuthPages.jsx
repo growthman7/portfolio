@@ -61,7 +61,7 @@ export function LoginPage() {
     >
       <form className="form" noValidate onSubmit={submit}>
         <div className="field">
-          <label htmlFor="username">Identifiant</label>
+          <label htmlFor="username">Identifiant ou adresse e-mail</label>
           <input className="input" id="username" name="username" autoComplete="username" required maxLength={150} autoFocus />
         </div>
         <div className="field">

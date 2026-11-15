@@ -18,6 +18,7 @@ admin = [
     path("", include("apps.career.admin_urls")),
     path("", include("apps.contact.admin_urls")),
     path("", include("apps.audit.admin_urls")),
+    path("", include("apps.accounts.admin_urls")),
 ]
 
 urlpatterns = [

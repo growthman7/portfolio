@@ -1,8 +1,8 @@
 """
 Contrôleurs d'authentification de l'administrateur.
 
-Aucune route ne permet de créer un compte : le premier administrateur est créé en ligne
-de commande (`manage.py create_portfolio_admin`).
+Aucune route publique ne permet de créer un compte : le premier administrateur est créé en ligne
+de commande (`manage.py create_portfolio_admin`), les suivants par un administrateur connecté.
 """
 from __future__ import annotations
 
@@ -20,6 +20,8 @@ from django.contrib.auth import (
 from django.contrib.auth.tokens import default_token_generator
 from django.core.exceptions import ValidationError as DjangoValidationError
 from django.core.mail import send_mail
+from django.db import transaction
+from django.db.models import Q
 from django.http import JsonResponse
 from django.middleware.csrf import get_token
 from django.utils.decorators import method_decorator
@@ -38,11 +40,13 @@ from apps.core.throttling import LoginThrottle, PasswordResetThrottle, ScopedIpT
 from apps.core.viewsets import EnforceCSRFMixin
 
 from .serializers import (
+    AdminCreateSerializer,
     LoginSerializer,
     PasswordChangeSerializer,
     PasswordResetConfirmSerializer,
     PasswordResetRequestSerializer,
 )
+from .services import sync_admin_group
 
 logger = logging.getLogger("portfolio.security")
 User = get_user_model()
@@ -208,3 +212,70 @@ class PasswordResetConfirmView(EnforceCSRFMixin, APIView):
             logger.warning("axes_reset_failed user_id=%s", user.pk)
         record(request, AuditLog.Action.PASSWORD_RESET_DONE, actor=user)
         return Response({"detail": "Mot de passe réinitialisé. Vous pouvez vous connecter."})
+
+
+# ---------------------------------------------------------------------------
+# Gestion des administrateurs (réservée aux administrateurs connectés)
+# ---------------------------------------------------------------------------
+LAST_ADMIN = "Impossible de supprimer le dernier administrateur actif : créez d'abord un autre compte."
+
+
+def _admins():
+    """Comptes ayant le rôle administrateur (actifs ou non)."""
+    return User.objects.filter(is_staff=True).filter(
+        Q(is_superuser=True) | Q(groups__name=settings.PORTFOLIO_ADMIN_GROUP)
+    ).distinct()
+
+
+def _admin_payload(user, current) -> dict:
+    return {
+        "id": user.pk,
+        "username": user.get_username(),
+        "first_name": user.first_name,
+        "last_name": user.last_name,
+        "email": user.email,
+        "is_active": user.is_active,
+        "date_joined": user.date_joined,
+        "last_login": user.last_login,
+        "is_self": user.pk == current.pk,
+    }
+
+
+class AdminListCreateView(APIView):
+    permission_classes = (IsAuthenticated, IsPortfolioAdmin)
+
+    def get(self, request):
+        return Response([_admin_payload(user, request.user) for user in _admins().order_by("date_joined", "pk")])
+
+    def post(self, request):
+        serializer = AdminCreateSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        data = serializer.validated_data
+        with transaction.atomic():
+            user = User.objects.create_user(  # mot de passe haché par Django (Argon2)
+                username=data["email"], email=data["email"], password=data["password"],
+                first_name=data["first_name"].strip(), last_name=data["last_name"].strip(), is_staff=True,
+            )
+            user.groups.add(sync_admin_group())
+            record(request, AuditLog.Action.ADMIN_CREATED, user, via="dashboard")
+        return Response(_admin_payload(user, request.user), status=status.HTTP_201_CREATED)
+
+
+class AdminDeleteView(APIView):
+    permission_classes = (IsAuthenticated, IsPortfolioAdmin)
+
+    def delete(self, request, pk):
+        with transaction.atomic():
+            # Verrou sur les comptes administrateurs : deux suppressions simultanées ne peuvent pas vider la liste.
+            admins = {user.pk: user for user in User.objects.select_for_update().filter(pk__in=_admins().values("pk"))}
+            target = admins.get(pk)
+            if target is None:
+                return Response({"detail": "Administrateur introuvable."}, status=status.HTTP_404_NOT_FOUND)
+            if not any(user.is_active and user.pk != pk for user in admins.values()):
+                return Response({"detail": LAST_ADMIN}, status=status.HTTP_409_CONFLICT)
+            record(request, AuditLog.Action.DELETE, target, self_delete=target.pk == request.user.pk)
+            is_self = target.pk == request.user.pk
+            target.delete()  # ses sessions deviennent invalides : le compte n'existe plus
+        if is_self:
+            logout(request._request)
+        return Response(status=status.HTTP_204_NO_CONTENT)

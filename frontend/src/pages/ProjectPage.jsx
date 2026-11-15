@@ -3,7 +3,7 @@ import { Link, useParams } from "react-router";
 import { api } from "../api/client.js";
 import { Layout } from "../components/Layout.jsx";
 import { Lightbox } from "../components/Lightbox.jsx";
-import { Icon, Picture, PlaceholderShot } from "../components/ui.jsx";
+import { Icon, Picture, PlaceholderShot, TransitionLink } from "../components/ui.jsx";
 import { useDocumentTitle } from "../hooks/useDocumentTitle.js";
 import { useLang } from "../i18n/LanguageContext.jsx";
 import { PROJECT_SLUG } from "../i18n/routes.js";
@@ -111,7 +111,7 @@ function CaseStudy({ project: p, active }) {
     <>
       <header className="case-hero container" id="intro" data-track="">
         <nav className="case-crumb mono" aria-label={t.case.breadcrumb}>
-          <Link to={{ pathname: routes.home, hash: `#${routes.sections.projects}` }}><span className="accent">←</span>{t.case.back}</Link>
+          <TransitionLink to={{ pathname: routes.home, hash: `#${routes.sections.projects}` }}><span className="accent">←</span>{t.case.back}</TransitionLink>
           <span aria-hidden="true">{`~/${t.case.folder}/${p.slug}`}</span>
         </nav>
         {p.is_sample ? <p className="case-flag"><span className="flag flag--sample">{t.projects.sampleNotice}</span></p> : null}
@@ -159,14 +159,14 @@ function CaseStudy({ project: p, active }) {
       {p.previous || p.next ? (
         <nav className="case-nav" aria-label={t.case.otherProjects}>
           {p.previous ? (
-            <Link className="case-nav__link" to={routes.project(p.previous.slug)}>
+            <TransitionLink className="case-nav__link" to={routes.project(p.previous.slug)}>
               <span className="case-nav__dir mono">{`← ${t.case.previous}`}</span><span className="case-nav__title">{p.previous.title}</span>
-            </Link>
+            </TransitionLink>
           ) : <span className="case-nav__link" aria-hidden="true" />}
           {p.next ? (
-            <Link className="case-nav__link case-nav__link--next" to={routes.project(p.next.slug)}>
+            <TransitionLink className="case-nav__link case-nav__link--next" to={routes.project(p.next.slug)}>
               <span className="case-nav__dir mono">{`${t.case.next} →`}</span><span className="case-nav__title">{p.next.title}</span>
-            </Link>
+            </TransitionLink>
           ) : null}
         </nav>
       ) : null}
@@ -218,7 +218,7 @@ export function ProjectPage() {
 
   return (
     <Layout brandName={`${t.case.folder}/${slug}`} highlight={routes.sections.projects} onSectionChange={onSectionChange} contentKey={`${slug}:${state.status}`}>
-      {state.status === "loading" ? <p className="container case-missing mono">{t.case.loading}</p> : null}
+      {state.status === "loading" ? <p className="container case-missing mono sys-loading" role="status">{t.case.loading}</p> : null}
       {state.status === "missing" ? <Missing /> : null}
       {state.status === "ready" ? <CaseStudy project={p} active={active} /> : null}
     </Layout>

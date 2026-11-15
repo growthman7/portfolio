@@ -1,15 +1,28 @@
 import { useMemo, useState } from "react";
-import { Link } from "react-router";
 import { useLang } from "../i18n/LanguageContext.jsx";
-import { Icon, Picture, PlaceholderShot, TitleParts } from "../components/ui.jsx";
+import { Icon, Picture, PlaceholderShot, TitleParts, TransitionLink } from "../components/ui.jsx";
 import { hostOf, safeUrl } from "../utils/format.js";
 
-/** Halo qui suit le pointeur sur la capture (variables CSS --mx / --my). */
+/**
+ * Halo qui suit le pointeur sur la capture (--mx / --my) et inclinaison de la fenêtre (--rx / --ry, bornées
+ * à ±0,5). Écouté sur la carte entière : le lien du titre la recouvre, la capture ne reçoit donc aucun événement.
+ */
 function trackPointer(event) {
-  const media = event.currentTarget;
+  const media = event.currentTarget.querySelector(".project-card__media");
   const rect = media.getBoundingClientRect();
-  media.style.setProperty("--mx", `${event.clientX - rect.left}px`);
-  media.style.setProperty("--my", `${event.clientY - rect.top}px`);
+  const x = event.clientX - rect.left;
+  const y = event.clientY - rect.top;
+  const clamp = (value) => Math.max(-0.5, Math.min(0.5, value)).toFixed(3);
+  media.style.setProperty("--mx", `${x}px`);
+  media.style.setProperty("--my", `${y}px`);
+  media.parentElement.style.setProperty("--rx", clamp(x / rect.width - 0.5));
+  media.parentElement.style.setProperty("--ry", clamp(y / rect.height - 0.5));
+}
+
+function releasePointer(event) {
+  const frame = event.currentTarget.querySelector(".project-card__frame");
+  frame.style.removeProperty("--rx");
+  frame.style.removeProperty("--ry");
 }
 
 function ProjectCard({ project, featured, animate }) {
@@ -21,7 +34,7 @@ function ProjectCard({ project, featured, animate }) {
   const classes = ["project-card", featured && "project-card--featured", animate && "is-visible"].filter(Boolean).join(" ");
 
   return (
-    <article className={classes} data-reveal="">
+    <article className={classes} data-reveal="" onPointerMove={trackPointer} onPointerLeave={releasePointer}>
       <div className="project-card__frame">
         <div className="project-card__bar">
           <i /><i /><i />
@@ -31,7 +44,7 @@ function ProjectCard({ project, featured, animate }) {
             {featured ? <span className="flag flag--featured">{t.projects.featured}</span> : null}
           </span>
         </div>
-        <div className="project-card__media" onPointerMove={trackPointer}>
+        <div className="project-card__media">
           {project.cover ? (
             <Picture image={project.cover} sizes={featured ? "(min-width: 1024px) 1200px, 100vw" : "(min-width: 760px) 50vw, 100vw"} alt={project.cover.alt || ""} />
           ) : <PlaceholderShot />}
@@ -39,7 +52,7 @@ function ProjectCard({ project, featured, animate }) {
       </div>
       <div className="project-card__body">
         <p className="project-card__meta mono"><span>{project.category?.name || ""}</span>{year ? <span>{year}</span> : null}</p>
-        <h3 className="project-card__title"><Link to={href}>{project.title}</Link></h3>
+        <h3 className="project-card__title"><TransitionLink to={href}>{project.title}</TransitionLink></h3>
         <p className="project-card__summary">{project.summary}</p>
         {project.technologies?.length ? (
           <ul className="chips" role="list" aria-label={t.projects.stack}>
@@ -47,9 +60,9 @@ function ProjectCard({ project, featured, animate }) {
           </ul>
         ) : null}
         <div className="project-card__actions">
-          <Link className="project-card__details" to={href} aria-label={`${t.projects.details} : ${project.title}`}>
+          <TransitionLink className="project-card__details" to={href} aria-label={`${t.projects.details} : ${project.title}`}>
             {t.projects.details}<span aria-hidden="true">→</span>
-          </Link>
+          </TransitionLink>
           {demo ? (
             <a className="ext-link" href={demo} target="_blank" rel="noopener noreferrer" aria-label={`${t.projects.demo} : ${project.title} (${t.openNewTab})`}>
               {t.projects.demo}<Icon name="arrow" />

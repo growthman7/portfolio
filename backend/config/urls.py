@@ -73,6 +73,10 @@ if getattr(settings, "SERVE_FRONTEND", False):
             response = serve(request, "404.html", document_root=root)
             response.status_code = 404
             return response
+        if (root / "index.html").is_file():
+            # Frontend construit mais pages SEO pas encore générées : l'application React gère l'adresse
+            # elle-même (page projet, « introuvable »), comme derrière Vercel.
+            return serve(request, "index.html", document_root=root)
         return JsonResponse(
             {"detail": "Frontend non construit : lancez « npm run build » dans frontend/ puis « python manage.py build_seo », "
                        "ou utilisez « npm run dev » (http://localhost:5173)."},

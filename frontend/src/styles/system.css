@@ -1,0 +1,71 @@
+/*
+ * Couche « système vivant » : le site se comporte comme un poste de travail allumé.
+ * Démarrage dans le terminal, lumière qui suit le pointeur, fenêtres qui prennent le focus,
+ * ouverture d'un projet comme une fenêtre, témoin d'activité. Tout part d'un état visible :
+ * sans JavaScript ou avec « réduire les animations », le contenu est simplement là.
+ */
+
+/* 1. Démarrage : le journal du noyau s'écrit avant l'invite */
+.terminal__boot { display: grid; gap: 1px; color: var(--text-faint); font-size: 0.78rem; }
+.terminal__boot span::before { content: "[ ok ] "; color: #4ade80; }
+.js .terminal__boot span { animation: boot-line 260ms var(--ease-out) both; animation-delay: calc(var(--i) * 170ms + 60ms); }
+@keyframes boot-line { from { opacity: 0; clip-path: inset(0 100% 0 0); } to { opacity: 1; clip-path: inset(0); } }
+
+/* 2. La lumière d'ambiance dérive vers le pointeur (variables --px / --py posées par usePointerField) */
+.backdrop__halo { translate: calc(var(--px, 0) * 7vmax) calc(var(--py, 0) * 5vmax); transition: translate 1400ms var(--ease-out); }
+
+/* 3. Cartes projet : une fenêtre qui prend le focus et s'incline sous le pointeur */
+.project-card__bar i { transition: background-color var(--dur-fast); }
+.project-card:hover .project-card__bar i, .project-card:focus-within .project-card__bar i { background: var(--blue); }
+.project-card:hover .project-card__bar i:first-child, .project-card:focus-within .project-card__bar i:first-child { background: var(--red); }
+.project-card__bar i:nth-child(2) { transition-delay: 60ms; }
+.project-card__bar i:nth-child(3) { transition-delay: 120ms; }
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  .project-card__frame {
+    transform: perspective(1100px) rotateX(calc(var(--ry, 0) * -2deg)) rotateY(calc(var(--rx, 0) * 2.5deg));
+    transition: transform 500ms var(--ease-out), border-color var(--dur) var(--ease-out), box-shadow var(--dur) var(--ease-out);
+  }
+  .project-card:hover .project-card__frame { box-shadow: 0 34px 60px -42px rgb(59 130 246 / 0.6); }
+}
+
+/* 4. Ouverture d'un projet : fondu entre les pages, puis la fenêtre du projet se déploie */
+::view-transition-old(root) { animation: 160ms ease-in both sys-out; }
+::view-transition-new(root) { animation: 380ms var(--ease-out) both sys-in; }
+@keyframes sys-out { to { opacity: 0; filter: blur(6px); } }
+@keyframes sys-in { from { opacity: 0; transform: translateY(14px); } }
+.js .case-hero > * { animation: rise 620ms var(--ease-out) both; }
+.js .case-hero > :nth-child(2) { animation-delay: 50ms; }
+.js .case-hero > :nth-child(3) { animation-delay: 100ms; }
+.js .case-hero > :nth-child(4) { animation-delay: 150ms; }
+.js .case-hero > :nth-child(5) { animation-delay: 200ms; }
+.js .case-hero > .case-cover { animation: window-open 780ms var(--ease-out) 220ms both; }
+@keyframes window-open { from { opacity: 0; transform: scale(0.965); clip-path: inset(0 0 100% 0 round var(--radius-m)); } to { opacity: 1; transform: none; clip-path: inset(0 round var(--radius-m)); } }
+
+/* 5. Chargement : une ligne de balayage plutôt qu'un texte figé */
+.sys-loading { position: relative; }
+.sys-loading::after {
+  content: ""; display: block; width: min(220px, 60vw); height: 2px; border-radius: 2px;
+  background: linear-gradient(90deg, transparent, var(--blue), transparent) 0 0 / 40% 100% no-repeat, var(--line);
+  animation: sys-scan 1100ms ease-in-out infinite alternate;
+}
+@keyframes sys-scan { from { background-position: -10% 0, 0 0; } to { background-position: 110% 0, 0 0; } }
+
+/* 6. Témoin d'activité du pied de page */
+.sys-status { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 4px 10px; font-variant-numeric: tabular-nums; }
+.sys-status__dot { position: relative; width: 7px; height: 7px; border-radius: 50%; background: #4ade80; }
+.sys-status__dot::after { content: ""; position: absolute; inset: 0; border-radius: 50%; background: inherit; animation: sys-pulse 2400ms var(--ease-out) infinite; }
+@keyframes sys-pulse { from { transform: scale(1); opacity: 0.7; } to { transform: scale(3.2); opacity: 0; } }
+.sys-status span + span::before { content: "·"; margin-right: 10px; color: var(--line-strong); }
+
+/* 7. Retour tactile des commandes */
+.btn:active, .project-card__details:active, .filter:active { transform: scale(0.97); transition-duration: 80ms; }
+
+/* 8. Surfaces du navigateur aux couleurs du système */
+html { scrollbar-color: var(--line-strong) var(--bg); caret-color: var(--blue); }
+
+@media (prefers-reduced-motion: reduce) {
+  .backdrop__halo { translate: none; }
+  .sys-status__dot::after { display: none; }
+  .sys-loading::after { background: var(--line-strong); }
+  ::view-transition-group(*), ::view-transition-old(*), ::view-transition-new(*) { animation: none !important; }
+}

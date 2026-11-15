@@ -172,9 +172,20 @@ Commande manuelle : `python manage.py build_seo`.
 
 ```bash
 cd backend
-python manage.py test --settings=config.settings.test     # 94 tests, sur un vrai PostgreSQL
+python manage.py test --settings=config.settings.test     # 109 tests, sur un vrai PostgreSQL
 coverage run --source=apps manage.py test --settings=config.settings.test && coverage report
 ```
+
+Tests de bout en bout dans un navigateur (Playwright) : projets (création, détail, projet inexistant),
+remplacement de l'administrateur initial, animations, mobile et « réduire les animations ».
+
+```bash
+cd frontend && npm run build
+cd ../backend && python manage.py test tests.e2e --settings=config.settings.e2e
+```
+
+Ils utilisent le Chromium de Playwright (`playwright install chromium`) ou, à défaut, Edge ou Chrome déjà
+installé. Base de test isolée : aucune donnée réelle n'est touchée.
 
 | Domaine | Ce qui est vérifié |
 |---|---|

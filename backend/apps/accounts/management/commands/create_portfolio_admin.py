@@ -29,6 +29,12 @@ class Command(BaseCommand):
             "--password-env",
             help="Nom d'une variable d'environnement contenant le mot de passe (déploiement automatisé).",
         )
+        parser.add_argument("--name", default="", help="Nom affiché dans le tableau de bord.")
+        parser.add_argument(
+            "--if-missing",
+            action="store_true",
+            help="Ne fait rien, sans erreur, si un administrateur existe déjà (démarrage du conteneur).",
+        )
         parser.add_argument(
             "--allow-additional",
             action="store_true",
@@ -38,6 +44,9 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         User = get_user_model()
         group = sync_admin_group()
+        if group.user_set.exists() and options.get("if_missing"):
+            self.stdout.write("Un administrateur existe déjà : aucun compte créé.")
+            return
         if group.user_set.exists() and not options["allow_additional"]:
             raise CommandError("Un administrateur existe déjà. Utilisez --allow-additional si c'est volontaire.")
 
@@ -66,7 +75,10 @@ class Command(BaseCommand):
             raise CommandError("Mot de passe refusé : " + " ".join(exc.messages)) from exc
 
         with transaction.atomic():
-            user = User.objects.create_user(username=username, email=email, password=password, is_staff=True)
+            user = User.objects.create_user(
+                username=username, email=email, password=password, is_staff=True,
+                first_name=(options.get("name") or "").strip()[:150],
+            )
             user.groups.add(group)
             AuditLog.objects.create(actor=user, action=AuditLog.Action.ADMIN_CREATED, metadata={"via": "cli"})
 

@@ -6,6 +6,7 @@ import { useCallback, useEffect, useRef } from "react";
 import { NavLink, Navigate, Outlet, Route, Routes, useLocation, useNavigate } from "react-router";
 import { api } from "./api.js";
 import { AuthProvider, RequireAuth, useAuth } from "./auth.jsx";
+import { AdminsPage } from "./pages/Admins.jsx";
 import { LoginPage, PasswordResetPage } from "./pages/AuthPages.jsx";
 import { CareerPage, SkillsPage, TaxonomyPage } from "./pages/Catalog.jsx";
 import { MessagesPage } from "./pages/Messages.jsx";
@@ -23,6 +24,7 @@ const NAV = [
   ["/career", "Parcours"],
   ["/messages", "Messages"],
   ["/profile", "Informations générales"],
+  ["/admins", "Administrateurs"],
   ["/security", "Sécurité"],
 ];
 
@@ -99,6 +101,7 @@ export function AdminApp() {
             <Route path="profile" element={<ProfilePage />} />
             <Route path="profile/:section" element={<ProfilePage />} />
             <Route path="profile/:section/:id" element={<ProfilePage />} />
+            <Route path="admins" element={<AdminsPage />} />
             <Route path="security" element={<SecurityPage />} />
             <Route path="*" element={<Navigate replace to="/" />} />
           </Route>

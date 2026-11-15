@@ -51,14 +51,19 @@ python manage.py seed_placeholders
 
 # Hébergeur sans accès Shell (offre gratuite Render) : création du premier administrateur à partir de
 # variables d'environnement. Sans effet si un administrateur existe déjà ; la politique de mots de passe
-# s'applique. Supprimez ADMIN_PASSWORD chez l'hébergeur une fois le compte créé.
-if [ -n "${ADMIN_USERNAME:-}" ] && [ -n "${ADMIN_EMAIL:-}" ] && [ -n "${ADMIN_PASSWORD:-}" ]; then
-  python manage.py create_portfolio_admin --username "$ADMIN_USERNAME" --email "$ADMIN_EMAIL" \
+# s'applique. Variables : ADMIN_INITIAL_NAME, ADMIN_INITIAL_EMAIL (sert d'identifiant), ADMIN_INITIAL_PASSWORD
+# (les anciens noms ADMIN_USERNAME, ADMIN_EMAIL et ADMIN_PASSWORD restent acceptés). Une fois connecté, créez
+# votre propre compte dans « Administrateurs », puis supprimez ce compte initial et ces variables.
+ADMIN_EMAIL="${ADMIN_INITIAL_EMAIL:-${ADMIN_EMAIL:-}}"
+ADMIN_PASSWORD="${ADMIN_INITIAL_PASSWORD:-${ADMIN_PASSWORD:-}}"
+if [ -n "$ADMIN_EMAIL" ] && [ -n "$ADMIN_PASSWORD" ]; then
+  ADMIN_PASSWORD="$ADMIN_PASSWORD" python manage.py create_portfolio_admin --if-missing \
+    --username "${ADMIN_USERNAME:-$ADMIN_EMAIL}" --email "$ADMIN_EMAIL" --name "${ADMIN_INITIAL_NAME:-}" \
     --password-env ADMIN_PASSWORD \
     || echo "Compte administrateur non créé (voir le message ci-dessus) : le démarrage continue."
 fi
 # Le mot de passe ne doit pas rester dans l'environnement du serveur d'application.
-unset ADMIN_PASSWORD
+unset ADMIN_PASSWORD ADMIN_INITIAL_PASSWORD
 
 # Publication du frontend construit dans le volume partagé (lu par Nginx en lecture seule).
 find /srv/frontend -mindepth 1 -delete

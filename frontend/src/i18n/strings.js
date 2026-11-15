@@ -14,7 +14,7 @@ export const STRINGS = {
     hero: {
       prompt: "visiteur@portfolio", defaultTitle: "Développeur Full Stack", expertise: "Domaines d'expertise",
       cta: "Découvrir mes projets", cv: "Télécharger mon CV", photoTodo: "photo à remplacer", photoCaption: "photo professionnelle",
-      scroll: "défiler",
+      scroll: "défiler", boot: ["noyau chargé", "/projets monté", "session visiteur ouverte"],
     },
     about: {
       label: "à propos", title: ["Parcours, vision ", "et méthode"], file: "a-propos.md", placeholder: "Présentation en cours de chargement…",
@@ -65,6 +65,7 @@ export const STRINGS = {
     footer: {
       networks: "réseaux", contact: "contact", rights: ". Tous droits réservés. Textes, visuels et réalisations présentés sont protégés par le droit d'auteur ; toute reproduction sans autorisation est interdite.",
       legal: "Mentions légales", privacy: "Confidentialité", top: "↑ haut de page",
+      online: "système en ligne", uptime: "session",
     },
     case: {
       loading: "Chargement du projet…", back: "Tous les projets", breadcrumb: "Fil d'Ariane", toc: "Sommaire",
@@ -98,7 +99,7 @@ export const STRINGS = {
     hero: {
       prompt: "visiteur@portfolio", defaultTitle: "Full Stack Developer", expertise: "Areas of expertise",
       cta: "Explore my projects", cv: "Download my résumé", photoTodo: "photo to replace", photoCaption: "professional photo",
-      scroll: "scroll",
+      scroll: "scroll", boot: ["kernel loaded", "/projects mounted", "visitor session opened"],
     },
     about: {
       label: "about", title: ["Background, vision ", "and approach"], file: "about.md", placeholder: "Loading introduction…",
@@ -149,6 +150,7 @@ export const STRINGS = {
     footer: {
       networks: "networks", contact: "contact", rights: ". All rights reserved. Texts, visuals and work shown are protected by copyright; reproduction without permission is prohibited.",
       legal: "Legal notice", privacy: "Privacy", top: "↑ back to top",
+      online: "system online", uptime: "session",
     },
     case: {
       loading: "Loading project…", back: "All projects", breadcrumb: "Breadcrumb", toc: "Contents",

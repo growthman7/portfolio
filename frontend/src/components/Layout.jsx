@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { Link, useLocation } from "react-router";
 import { useSiteData } from "../api/SiteDataContext.jsx";
 import { useLang } from "../i18n/LanguageContext.jsx";
+import { usePointerField } from "../hooks/motion.js";
 import { useReveal } from "../hooks/useReveal.js";
 import { slugify } from "../utils/format.js";
 import { Footer } from "./Footer.jsx";
@@ -31,6 +32,7 @@ export function Layout({ onHome = false, brandName, highlight, onSectionChange, 
   const { site, status } = useSiteData();
   const profile = site?.profile;
   useReveal();
+  usePointerField();
   useScrollOnNavigate();
   const name = brandName ?? (profile ? slugify(`${profile.first_name}-${profile.last_name}`) : "portfolio");
 

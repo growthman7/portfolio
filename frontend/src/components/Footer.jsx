@@ -1,8 +1,32 @@
+import { useEffect, useState } from "react";
 import { Link } from "react-router";
 import { useSiteData } from "../api/SiteDataContext.jsx";
 import { useLang } from "../i18n/LanguageContext.jsx";
 import { phoneLinks, safeUrl } from "../utils/format.js";
 import { SectionLink } from "./Header.jsx";
+
+
+const two = (n) => String(n).padStart(2, "0");
+
+/** Témoin d'activité : heure locale et durée de la visite. Décoratif, donc masqué aux lecteurs d'écran. */
+function SystemStatus() {
+  const { t, lang } = useLang();
+  const [started] = useState(() => Date.now());
+  const [now, setNow] = useState(started);
+  useEffect(() => {
+    const timer = setInterval(() => setNow(Date.now()), 1000);
+    return () => clearInterval(timer);
+  }, []);
+  const seconds = Math.floor((now - started) / 1000);
+  return (
+    <p className="sys-status" aria-hidden="true">
+      <i className="sys-status__dot" />
+      <span>{t.footer.online}</span>
+      <span>{new Date(now).toLocaleTimeString(lang === "en" ? "en-GB" : "fr-FR")}</span>
+      <span>{`${t.footer.uptime} ${two(Math.floor(seconds / 60))}:${two(seconds % 60)}`}</span>
+    </p>
+  );
+}
 
 /** Pied de page : nom, signature, navigation, réseaux et mentions. */
 export function Footer({ onHome }) {
@@ -56,6 +80,7 @@ export function Footer({ onHome }) {
           </div>
         </div>
         <div className="footer__bottom">
+          <SystemStatus />
           <p>© {new Date().getFullYear()} {`${first} ${last}`.trim()}{t.footer.rights}</p>
           <p className="footer__legal">
             <Link to={routes.legal}>{t.footer.legal}</Link>
