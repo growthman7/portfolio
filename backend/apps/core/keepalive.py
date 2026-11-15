@@ -24,11 +24,14 @@ def ping(url: str) -> bool:
         return False
 
 
-def start() -> None:
-    """Lance la boucle une seule fois par processus ; sans effet si KEEPALIVE_URL est vide."""
+def start() -> threading.Event | None:
+    """
+    Lance la boucle une seule fois par processus ; sans effet si KEEPALIVE_URL est vide.
+    Renvoie l'événement qui l'arrête (utile aux tests).
+    """
     url, every = settings.KEEPALIVE_URL, settings.KEEPALIVE_INTERVAL
     if not url.startswith("https://") or _started.is_set():
-        return
+        return None
     _started.set()
     stop = threading.Event()
 
@@ -39,3 +42,4 @@ def start() -> None:
             ping(url)
 
     threading.Thread(target=loop, name="keepalive", daemon=True).start()
+    return stop

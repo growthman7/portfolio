@@ -349,14 +349,17 @@ class KeepAliveTests(PortfolioAPITestCase):
         from apps.core import keepalive
 
         with self.settings(KEEPALIVE_URL="", KEEPALIVE_INTERVAL=600):
-            keepalive.start()
-            self.assertFalse(keepalive._started.is_set())
+            self.assertIsNone(keepalive.start())
         called = threading.Event()
         with self.settings(KEEPALIVE_URL="https://exemple.test/healthz/", KEEPALIVE_INTERVAL=0.01), \
                 mock.patch.object(keepalive, "ping", side_effect=lambda url: called.set()) as ping:
-            keepalive.start()
-            self.assertTrue(called.wait(2))
-            ping.assert_called_with("https://exemple.test/healthz/")
+            stop = keepalive.start()
+            self.addCleanup(keepalive._started.clear)
+            try:
+                self.assertTrue(called.wait(2))
+                ping.assert_called_with("https://exemple.test/healthz/")
+            finally:
+                stop.set()  # sinon le fil continuerait d'appeler le réseau pendant les autres tests
 
     def test_ping_reports_failure_without_raising(self):
         from apps.core import keepalive
