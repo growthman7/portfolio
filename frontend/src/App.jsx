@@ -1,7 +1,7 @@
 import { Navigate, Outlet, Route, Routes, useLocation } from "react-router";
 import { SiteDataProvider } from "./api/SiteDataContext.jsx";
 import { LanguageProvider } from "./i18n/LanguageContext.jsx";
-import { ROUTES } from "./i18n/routes.js";
+import { PROJECT_SLUG, ROUTES } from "./i18n/routes.js";
 import { HomePage } from "./pages/HomePage.jsx";
 import { ProjectPage } from "./pages/ProjectPage.jsx";
 import { LegalPage, NotFoundPage, PrivacyPage } from "./pages/StaticPages.jsx";
@@ -21,7 +21,7 @@ function LangShell({ lang }) {
 function LegacyProject({ lang }) {
   const { hash } = useLocation();
   const slug = decodeURIComponent(hash.slice(1));
-  return <Navigate replace to={/^[a-z0-9-]{1,120}$/.test(slug) ? ROUTES[lang].project(slug) : ROUTES[lang].home} />;
+  return <Navigate replace to={PROJECT_SLUG.test(slug) ? ROUTES[lang].project(slug) : ROUTES[lang].home} />;
 }
 
 /**

@@ -2,6 +2,12 @@
  * Adresses publiques du site, identiques à celles générées par le backend
  * (apps/core/services/seo.py) : ne pas les modifier d'un seul côté.
  */
+/**
+ * Identifiant d'URL d'un projet : exactement ce que le backend accepte (SlugField de Django : lettres,
+ * chiffres, tirets et tirets bas). Même règle dans apps/core/services/seo.py (SLUG_SAFE).
+ */
+export const PROJECT_SLUG = /^[A-Za-z0-9_-]{1,120}$/;
+
 export const ROUTES = {
   fr: {
     home: "/",

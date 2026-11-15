@@ -6,9 +6,9 @@ import { Lightbox } from "../components/Lightbox.jsx";
 import { Icon, Picture, PlaceholderShot } from "../components/ui.jsx";
 import { useDocumentTitle } from "../hooks/useDocumentTitle.js";
 import { useLang } from "../i18n/LanguageContext.jsx";
+import { PROJECT_SLUG } from "../i18n/routes.js";
 import { hostOf, lines, pad2, safeUrl } from "../utils/format.js";
 
-const SLUG = /^[a-z0-9-]{1,120}$/;
 
 function TextBlock({ text }) {
   const parts = lines(text);
@@ -197,7 +197,7 @@ export function ProjectPage() {
   const onSectionChange = useCallback((id) => setActive(id), []);
 
   useEffect(() => {
-    if (!SLUG.test(slug)) { setState({ status: "missing", project: null }); return undefined; }
+    if (!PROJECT_SLUG.test(slug)) { setState({ status: "missing", project: null }); return undefined; }
     const controller = new AbortController();
     setState({ status: "loading", project: null });
     api.project(slug, lang, controller.signal)

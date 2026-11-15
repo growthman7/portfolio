@@ -35,7 +35,9 @@ PAGES = {"fr": ("index.html", "/"), "en": ("en/index.html", "/en/")}
 # Dossier des pages projet générées, par langue.
 PROJECT_FOLDERS = {"fr": "projets", "en": "en/projects"}
 PROJECT_URL = {"fr": "/projets/{slug}/", "en": "/en/projects/{slug}/"}
-SLUG_SAFE = re.compile(r"^[a-z0-9-]{1,120}$")
+# Tout ce qu'accepte un SlugField de Django (lettres, chiffres, tirets, tirets bas) : sans point ni barre
+# oblique, donc sans risque pour les chemins. Même règle dans frontend/src/i18n/routes.js (PROJECT_SLUG).
+SLUG_SAFE = re.compile(r"^[A-Za-z0-9_-]{1,120}$")
 # Pages sans contenu en base : (fichier, langue, titre). Non indexées.
 STATIC_PAGES = (
     ("mentions-legales.html", "fr", "Mentions légales"),

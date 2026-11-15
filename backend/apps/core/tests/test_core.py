@@ -223,6 +223,15 @@ class SeoTests(PortfolioAPITestCase):
         self.assertFalse((self.target / "projets" / "mon-projet").exists())
         self.assertFalse((self.target / "en" / "projects" / "mon-projet").exists())
 
+    def test_project_page_is_generated_for_every_slug_django_accepts(self):
+        """Un identifiant saisi avec un tiret bas ou une majuscule est valide en base : il doit avoir sa page."""
+        from apps.projects.models import Category, Project
+
+        category = Category.objects.create(name_fr="Web", slug="web")
+        Project.objects.create(title_fr="Portfolio", slug="Mon_portfolio", category=category, is_published=True)
+        seo.regenerate(self.target)
+        self.assertTrue((self.target / "projets" / "Mon_portfolio" / "index.html").is_file())
+
 
 class BuildFrontendCommandTests(PortfolioAPITestCase):
     def test_refuses_unbuilt_source(self):
