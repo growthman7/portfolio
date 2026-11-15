@@ -52,7 +52,7 @@ class EndToEndTests(LiveServerTestCase):
             try:
                 cls.browser = cls.playwright.chromium.launch(channel=channel)
                 break
-            except Exception:  # noqa: BLE001, S112, PERF203 - navigateur absent : on essaie le suivant
+            except Exception:  # noqa: BLE001, S112 - navigateur absent : on essaie le suivant
                 continue
         else:
             cls.playwright.stop()
