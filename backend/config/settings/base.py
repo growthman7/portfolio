@@ -66,6 +66,12 @@ ALLOWED_HOSTS = env.list("DJANGO_ALLOWED_HOSTS", default=["localhost", "127.0.0.
 RENDER_EXTERNAL_HOSTNAME = env.str("RENDER_EXTERNAL_HOSTNAME", default="")
 if RENDER_EXTERNAL_HOSTNAME and RENDER_EXTERNAL_HOSTNAME not in ALLOWED_HOSTS:
     ALLOWED_HOSTS.append(RENDER_EXTERNAL_HOSTNAME)
+# Requête périodique vers le serveur lui-même (apps/core/keepalive.py) : évite la mise en veille de l'offre
+# gratuite de Render. Activée d'office sur Render ; KEEPALIVE_URL vide la désactive.
+KEEPALIVE_URL = env.str(
+    "KEEPALIVE_URL", default=f"https://{RENDER_EXTERNAL_HOSTNAME}/healthz/" if RENDER_EXTERNAL_HOSTNAME else ""
+)
+KEEPALIVE_INTERVAL = env.int("KEEPALIVE_INTERVAL", default=600)  # secondes
 
 INSTALLED_APPS = [
     "django.contrib.auth",

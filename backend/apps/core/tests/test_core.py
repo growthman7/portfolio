@@ -339,3 +339,26 @@ class MediaServingTests(PortfolioAPITestCase):
 class HealthTests(PortfolioAPITestCase):
     def test_healthz(self):
         self.assertEqual(self.client.get("/healthz/").json(), {"status": "ok"})
+
+
+class KeepAliveTests(PortfolioAPITestCase):
+    def test_disabled_without_url_and_runs_periodically_with_one(self):
+        import threading
+        from unittest import mock
+
+        from apps.core import keepalive
+
+        with self.settings(KEEPALIVE_URL="", KEEPALIVE_INTERVAL=600):
+            keepalive.start()
+            self.assertFalse(keepalive._started.is_set())
+        called = threading.Event()
+        with self.settings(KEEPALIVE_URL="https://exemple.test/healthz/", KEEPALIVE_INTERVAL=0.01), \
+                mock.patch.object(keepalive, "ping", side_effect=lambda url: called.set()) as ping:
+            keepalive.start()
+            self.assertTrue(called.wait(2))
+            ping.assert_called_with("https://exemple.test/healthz/")
+
+    def test_ping_reports_failure_without_raising(self):
+        from apps.core import keepalive
+
+        self.assertFalse(keepalive.ping("https://127.0.0.1:9/healthz/"))

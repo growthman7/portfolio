@@ -7,4 +7,6 @@ class CoreConfig(AppConfig):
     verbose_name = "Cœur du portfolio"
 
     def ready(self) -> None:
-        from . import signals  # noqa: F401
+        from . import keepalive, signals  # noqa: F401
+
+        keepalive.start()
